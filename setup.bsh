@@ -1,0 +1,31 @@
+#!/bin/bash
+
+command -v wget >/dev/null 2>&1 || { echo "wget required but it's not installed.  Aborting." >&2; exit 1; }
+
+#Get, build, install OpenCV
+git clone https://github.com/Itseez/opencv.git
+cd opencv
+git checkout `git rev-list -1 --before="Apr 7 2016" master`
+
+cmake .
+make
+sudo make install
+cd ..
+
+#Get the negative testcases
+wget http://www.vision.caltech.edu/Image_Datasets/Caltech101/101_ObjectCategories.tar.gz
+tar -xzf 101_ObjectCategories.tar.gz
+mv 101_ObjectCategories negative_testcases
+rm 101_ObjectCategories.tar.gz
+cd negative_testcases
+for file in $(ls ./*); do cp $file/* ./; rm -r $file; done
+cd ..
+
+#Get the positive testcases
+wget http://vis-www.cs.umass.edu/lfw/lfw.tgz
+tar -xzf lfw.tgz
+mv lfw positive_testcases
+rm lfw.tgz
+cd positive_testcases
+for file in $(ls ./*); do cp $file/* ./; rm -r $file; done
+cd ..

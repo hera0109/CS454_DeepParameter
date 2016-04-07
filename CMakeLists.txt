@@ -1,0 +1,10 @@
+cmake_minimum_required(VERSION 2.8)
+project( DisplayImage )
+find_package( OpenCV REQUIRED )
+find_package(Boost 1.57.0 COMPONENTS system filesystem REQUIRED)
+INCLUDE_DIRECTORIES( ${Boost_INCLUDE_DIR} )
+
+add_executable( classify_images classify_images.cpp)
+target_link_libraries( classify_images ${OpenCV_LIBS} )
+TARGET_LINK_LIBRARIES( classify_images ${Boost_LIBRARIES} )
+set(CMAKE_BUILD_TYPE Debug)
