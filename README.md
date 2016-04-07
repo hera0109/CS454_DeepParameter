@@ -1,6 +1,7 @@
 # DPT-OpenCV
 
 #Run ./setup.bsh to download and install OpenCV, the Positive and Negative testcases
+#setup.bsh has yet to be fully run. May be buggy. If you have a problem with then it's your problem
 
 CMake .
 make
