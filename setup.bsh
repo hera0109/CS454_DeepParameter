@@ -18,7 +18,7 @@ tar -xzf 101_ObjectCategories.tar.gz && \
 mv 101_ObjectCategories negative_testcases && \
 rm 101_ObjectCategories.tar.gz && \
 cd negative_testcases && \
-for file in $(ls ./*); do cp $file/* ./; rm -r $file; done && \
+for file in $(ls); do cp $file/* ./; rm -r $file; done && \
 cd .. && \
 
 #Get the positive testcases
@@ -27,5 +27,5 @@ tar -xzf lfw.tgz && \
 mv lfw positive_testcases && \
 rm lfw.tgz && \
 cd positive_testcases && \
-for file in $(ls ./*); do cp $file/* ./; rm -r $file; done && \
+for file in $(ls); do cp $file/* ./; rm -r $file; done && \
 cd ..
