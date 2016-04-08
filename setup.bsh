@@ -1,4 +1,5 @@
 #!/bin/bash
+# REQUIRES cmake, make, and build-essential
 
 command -v wget >/dev/null 2>&1 || { echo "wget required but it's not installed.  Aborting." >&2; exit 1; }
 
