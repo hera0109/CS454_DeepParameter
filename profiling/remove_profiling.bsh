@@ -1,0 +1,17 @@
+#!/bin/bash
+
+#Remove symbols from opencv
+cp CMakeLists_original.txt ../opencv/CMakeLists.txt
+cd ../opencv
+cmake .
+make clean
+make
+sudo make install
+
+#Remove symbols from the main program
+cd ..
+cmake .
+make clean
+make
+
+echo "No more symbols! No more profiling!"

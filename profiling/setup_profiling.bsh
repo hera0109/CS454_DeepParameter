@@ -1,0 +1,23 @@
+#!/bin/bash
+
+#Build OpenCV
+cp CMakeLists_cmake_for_profiling.txt ../opencv/CMakeLists.txt
+cd ../opencv
+cmake -DCMAKE_BUILD_TYPE=RELEASE -DBUILD_SHARED_LIBS=OFF
+make clean
+make
+sudo make install
+
+#Build the tool
+cd ..
+cmake -DBUILD_SHARED_LIBS=OFF
+make clean
+make
+
+echo "Setup for profiling complete. Recommended profiling approach:"
+echo "valgrind -tool=callgrind ./classify_images [image_directory]"
+echo
+echo "For human readable GUI:"
+echo "kcachegrind callgrind.*"
+echo
+echo "Run ./remove_profiling.bsh to restore programming"
