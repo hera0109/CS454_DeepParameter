@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8)
-project( DisplayImage )
+project( classify_images )
 find_package( OpenCV REQUIRED )
 find_package(Boost COMPONENTS system filesystem REQUIRED)
 INCLUDE_DIRECTORIES( ${Boost_INCLUDE_DIR} )
