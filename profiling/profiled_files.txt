@@ -1,0 +1,6 @@
+When profiling we identified the following files in wich the vast majority of activity:
+
+opencv/modules/objdetect/src/cascadedetect.cpp
+opencv/modules/objdetect/src/cascadedetect.hpp
+opencv/modules/imgproc/src/imgwarp.cpp
+opencv/modules/imgproc/src/color.cpp
