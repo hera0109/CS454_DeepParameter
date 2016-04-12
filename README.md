@@ -24,4 +24,4 @@ the directory "profiling" provides two scripts "setup_profiling.bsh" and "remove
 
 "profiling/callgraph.png" was generated using "qcachegrind" for Mac OS X (use "kcachegrind" for similar results on Linux)
 
-The "modifiable_files" directory contains the files which shall be modified. At present the only alteration is a simple sed find and replace to change all instances of "++" to "+=1".
+The "modifiable_files" directory contains the files which shall be modified. 

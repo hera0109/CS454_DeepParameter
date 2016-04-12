@@ -51,21 +51,21 @@ namespace cv
 
 template<typename _Tp> void copyVectorToUMat(const std::vector<_Tp>& v, UMat& um)
 {
-    if(CDC_LINE_54_1)
+    if(v.empty())
         um.release();
-    Mat(CDC_LINE_56_1, (int)(v.size()*sizeof(v[CDC_LINE_56_1])), CV_8U, (void*)&v[CDC_LINE_56_3]).copyTo(um);
+    Mat(1, (int)(v.size()*sizeof(v[0])), CV_8U, (void*)&v[0]).copyTo(um);
 }
 
 void groupRectangles(std::vector<Rect>& rectList, int groupThreshold, double eps,
                      std::vector<int>* weights, std::vector<double>* levelWeights)
 {
-    if( groupThreshold <= CDC_LINE_62_1 || CDC_LINE_62_2 )
+    if( groupThreshold <= 0 || rectList.empty() )
     {
         if( weights )
         {
             size_t i, sz = rectList.size();
             weights->resize(sz);
-            for( i = 0; i < sz; i+=1 )
+            for( i = 0; i < sz; i++ )
                 (*weights)[i] = 1;
         }
         return;
@@ -79,21 +79,21 @@ void groupRectangles(std::vector<Rect>& rectList, int groupThreshold, double eps
     std::vector<int> rejectLevels(nclasses, 0);
     std::vector<double> rejectWeights(nclasses, DBL_MIN);
     int i, j, nlabels = (int)labels.size();
-    for( i = 0; i < nlabels; i+=1 )
+    for( i = 0; i < nlabels; i++ )
     {
         int cls = labels[i];
         rrects[cls].x += rectList[i].x;
         rrects[cls].y += rectList[i].y;
         rrects[cls].width += rectList[i].width;
         rrects[cls].height += rectList[i].height;
-        rweights[cls]+=1;
+        rweights[cls]++;
     }
 
     bool useDefaultWeights = false;
 
     if ( levelWeights && weights && !weights->empty() && !levelWeights->empty() )
     {
-        for( i = 0; i < nlabels; i+=1 )
+        for( i = 0; i < nlabels; i++ )
         {
             int cls = labels[i];
             if( (*weights)[i] > rejectLevels[cls] )
@@ -108,7 +108,7 @@ void groupRectangles(std::vector<Rect>& rectList, int groupThreshold, double eps
     else
         useDefaultWeights = true;
 
-    for( i = 0; i < nclasses; i+=1 )
+    for( i = 0; i < nclasses; i++ )
     {
         Rect r = rrects[i];
         float s = 1.f/rweights[i];
@@ -124,7 +124,7 @@ void groupRectangles(std::vector<Rect>& rectList, int groupThreshold, double eps
     if( levelWeights )
         levelWeights->clear();
 
-    for( i = 0; i < nclasses; i+=1 )
+    for( i = 0; i < nclasses; i++ )
     {
         Rect r1 = rrects[i];
         int n1 = rweights[i];
@@ -135,7 +135,7 @@ void groupRectangles(std::vector<Rect>& rectList, int groupThreshold, double eps
         if( n1 <= groupThreshold )
             continue;
         // filter out small face rectangles inside large rectangles
-        for( j = 0; j < nclasses; j+=1 )
+        for( j = 0; j < nclasses; j++ )
         {
             int n2 = rweights[j];
 
@@ -181,7 +181,7 @@ public:
         iterMax = maxIter;
         modeEps = eps;
 
-        for (unsigned i = 0; i<positionsV.size(); i+=1)
+        for (unsigned i = 0; i<positionsV.size(); i++)
         {
             meanshiftV[i] = getNewValue(positionsV[i]);
             distanceV[i] = moveToMode(meanshiftV[i]);
@@ -191,10 +191,10 @@ public:
 
     void getModes(std::vector<Point3d>& modesV, std::vector<double>& resWeightsV, const double eps)
     {
-        for (size_t i=0; i <distanceV.size(); i+=1)
+        for (size_t i=0; i <distanceV.size(); i++)
         {
             bool is_found = false;
-            for(size_t j=0; j<modesV.size(); j+=1)
+            for(size_t j=0; j<modesV.size(); j++)
             {
                 if ( getDistance(distanceV[i], modesV[j]) < eps)
                 {
@@ -210,7 +210,7 @@ public:
 
         resWeightsV.resize(modesV.size());
 
-        for (size_t i=0; i<modesV.size(); i+=1)
+        for (size_t i=0; i<modesV.size(); i++)
         {
             resWeightsV[i] = getResultWeight(modesV[i]);
         }
@@ -232,7 +232,7 @@ protected:
     {
         Point3d resPoint(.0);
         Point3d ratPoint(.0);
-        for (size_t i=0; i<positionsV.size(); i+=1)
+        for (size_t i=0; i<positionsV.size(); i++)
         {
             Point3d aPt= positionsV[i];
             Point3d bPt = inPt;
@@ -266,7 +266,7 @@ protected:
     double getResultWeight(const Point3d& inPt) const
     {
         double sumW=0;
-        for (size_t i=0; i<positionsV.size(); i+=1)
+        for (size_t i=0; i<positionsV.size(); i++)
         {
             Point3d aPt = positionsV[i];
             Point3d sPt = densityKernel;
@@ -288,7 +288,7 @@ protected:
     Point3d moveToMode(Point3d aPt) const
     {
         Point3d bPt;
-        for (int i = 0; i<iterMax; i+=1)
+        for (int i = 0; i<iterMax; i++)
         {
             bPt = aPt;
             aPt = getNewValue(bPt);
@@ -321,7 +321,7 @@ static void groupRectangles_meanshift(std::vector<Rect>& rectList, double detect
     std::vector<double> hitWeights(detectionCount), resultWeights;
     Point2d hitCenter;
 
-    for (int i=0; i < detectionCount; i+=1)
+    for (int i=0; i < detectionCount; i++)
     {
         hitWeights[i] = (*foundWeights)[i];
         hitCenter = (rectList[i].tl() + rectList[i].br())*(0.5); //center of rectangles
@@ -339,7 +339,7 @@ static void groupRectangles_meanshift(std::vector<Rect>& rectList, double detect
 
     msGrouping.getModes(resultHits, resultWeights, 1);
 
-    for (unsigned i=0; i < resultHits.size(); +=1i)
+    for (unsigned i=0; i < resultHits.size(); ++i)
     {
 
         double scale = std::exp(resultHits[i].z);
@@ -437,7 +437,7 @@ bool FeatureEvaluator::updateScaleData( Size imgsz, const std::vector<float>& _s
     sbufSize.width = std::max(sbufSize.width, (int)alignSize(cvRound(imgsz.width/_scales[0]) + 31, 32));
     recalcOptFeatures = recalcOptFeatures || sbufSize.width != prevBufSize.width;
 
-    for( i = 0; i < nscales; i+=1 )
+    for( i = 0; i < nscales; i++ )
     {
         FeatureEvaluator::ScaleData& s = scaleData->at(i);
         if( !recalcOptFeatures && fabs(s.scale - _scales[i]) > FLT_EPSILON*100*_scales[i] )
@@ -495,7 +495,7 @@ bool FeatureEvaluator::setImage( InputArray _image, const std::vector<float>& _s
         usbuf.create(sbufSize.height*nchannels, sbufSize.width, CV_32S);
         urbuf.create(sz0, CV_8U);
 
-        for (i = 0; i < nscales; i+=1)
+        for (i = 0; i < nscales; i++)
         {
             const ScaleData& s = scaleData->at(i);
             UMat dst(urbuf, Rect(0, 0, s.szi.width - 1, s.szi.height - 1));
@@ -510,7 +510,7 @@ bool FeatureEvaluator::setImage( InputArray _image, const std::vector<float>& _s
         sbuf.create(sbufSize.height*nchannels, sbufSize.width, CV_32S);
         rbuf.create(sz0, CV_8U);
 
-        for (i = 0; i < nscales; i+=1)
+        for (i = 0; i < nscales; i++)
         {
             const ScaleData& s = scaleData->at(i);
             Mat dst(s.szi.height - 1, s.szi.width - 1, CV_8U, rbuf.ptr());
@@ -531,13 +531,13 @@ bool HaarEvaluator::Feature :: read( const FileNode& node )
     FileNodeIterator it = rnode.begin(), it_end = rnode.end();
 
     int ri;
-    for( ri = 0; ri < RECT_NUM; ri+=1 )
+    for( ri = 0; ri < RECT_NUM; ri++ )
     {
         rect[ri].r = Rect();
         rect[ri].weight = 0.f;
     }
 
-    for(ri = 0; it != it_end; +=1it, ri+=1)
+    for(ri = 0; it != it_end; ++it, ri++)
     {
         FileNodeIterator it2 = (*it).begin();
         it2 >> rect[ri].r.x >> rect[ri].r.y >>
@@ -581,7 +581,7 @@ bool HaarEvaluator::read(const FileNode& node, Size _origWinSize)
     sbufSize = Size();
     ufbuf.release();
 
-    for(i = 0; i < n; i+=1, +=1it)
+    for(i = 0; i < n; i++, ++it)
     {
         if(!ff[i].read(*it))
             return false;
@@ -669,11 +669,11 @@ void HaarEvaluator::computeOptFeatures()
     const std::vector<Feature>& ff = *features;
     optfeatures->resize(nfeatures);
     optfeaturesPtr = &(*optfeatures)[0];
-    for( fi = 0; fi < nfeatures; fi+=1 )
+    for( fi = 0; fi < nfeatures; fi++ )
         optfeaturesPtr[fi].setOffsets( ff[fi], sstep, tofs );
     optfeatures_lbuf->resize(nfeatures);
 
-    for( fi = 0; fi < nfeatures; fi+=1 )
+    for( fi = 0; fi < nfeatures; fi++ )
         optfeatures_lbuf->at(fi).setOffsets(ff[fi], lbufSize.width > 0 ? lbufSize.width : sstep, tofs);
 
     copyVectorToUMat(*optfeatures_lbuf, ufbuf);
@@ -774,7 +774,7 @@ bool LBPEvaluator::read( const FileNode& node, Size _origWinSize )
     optfeaturesPtr = 0;
     FileNodeIterator it = node.begin(), it_end = node.end();
     std::vector<Feature>& ff = *features;
-    for(int i = 0; it != it_end; +=1it, i+=1)
+    for(int i = 0; it != it_end; ++it, i++)
     {
         if(!ff[i].read(*it))
             return false;
@@ -820,7 +820,7 @@ void LBPEvaluator::computeOptFeatures()
     const std::vector<Feature>& ff = *features;
     optfeatures->resize(nfeatures);
     optfeaturesPtr = &(*optfeatures)[0];
-    for( fi = 0; fi < nfeatures; fi+=1 )
+    for( fi = 0; fi < nfeatures; fi++ )
         optfeaturesPtr[fi].setOffsets( ff[fi], sstep );
     copyVectorToUMat(*optfeatures, ufbuf);
 }
@@ -977,7 +977,7 @@ public:
         double gypWeight = 0.;
         Size origWinSize = classifier->data.origWinSize;
 
-        for( int scaleIdx = 0; scaleIdx < nscales; scaleIdx+=1 )
+        for( int scaleIdx = 0; scaleIdx < nscales; scaleIdx++ )
         {
             const FeatureEvaluator::ScaleData& s = scaleData[scaleIdx];
             float scalingFactor = s.scale;
@@ -1160,7 +1160,7 @@ bool CascadeClassifierImpl::ocl_detectMultiScaleNoGrouping( const std::vector<fl
         int nfaces = fptr[0];
         nfaces = std::min(nfaces, (int)MAX_FACES);
 
-        for( int i = 0; i < nfaces; i+=1 )
+        for( int i = 0; i < nfaces; i++ )
         {
             const FeatureEvaluator::ScaleData& s = featureEvaluator->getScaleData(fptr[i*3 + 1]);
             candidates.push_back(Rect(cvRound(fptr[i*3 + 2]*s.scale),
@@ -1299,7 +1299,7 @@ void CascadeClassifierImpl::detectMultiScaleNoGrouping( InputArray _image, std::
         const FeatureEvaluator::ScaleData* s = &featureEvaluator->getScaleData(0);
         Size szw = s->getWorkingSize(data.origWinSize);
         int nstripes = cvCeil(szw.width/32.);
-        for( i = 0; i < nscales; i+=1 )
+        for( i = 0; i < nscales; i++ )
         {
             szw = s[i].getWorkingSize(data.origWinSize);
             stripeSizes[i] = std::max((szw.height/s[i].ystep + nstripes-1)/nstripes, 1)*s[i].ystep;
@@ -1444,7 +1444,7 @@ bool CascadeClassifierImpl::Data::read(const FileNode &root)
     minNodesPerTree = INT_MAX;
     maxNodesPerTree = 0;
 
-    for( int si = 0; it != it_end; si+=1, +=1it )
+    for( int si = 0; it != it_end; si++, ++it )
     {
         FileNode fns = *it;
         Stage stage;
@@ -1458,7 +1458,7 @@ bool CascadeClassifierImpl::Data::read(const FileNode &root)
         classifiers.reserve(stages[si].first + stages[si].ntrees);
 
         FileNodeIterator it1 = fns.begin(), it1_end = fns.end();
-        for( ; it1 != it1_end; +=1it1 ) // weak trees
+        for( ; it1 != it1_end; ++it1 ) // weak trees
         {
             FileNode fnw = *it1;
             FileNode internalNodes = fnw[CC_INTERNAL_NODES];
@@ -1483,25 +1483,25 @@ bool CascadeClassifierImpl::Data::read(const FileNode &root)
             for( ; internalNodesIter != internalNodesEnd; ) // nodes
             {
                 DTreeNode node;
-                node.left = (int)*internalNodesIter; +=1internalNodesIter;
-                node.right = (int)*internalNodesIter; +=1internalNodesIter;
-                node.featureIdx = (int)*internalNodesIter; +=1internalNodesIter;
+                node.left = (int)*internalNodesIter; ++internalNodesIter;
+                node.right = (int)*internalNodesIter; ++internalNodesIter;
+                node.featureIdx = (int)*internalNodesIter; ++internalNodesIter;
                 if( subsetSize > 0 )
                 {
-                    for( int j = 0; j < subsetSize; j+=1, +=1internalNodesIter )
+                    for( int j = 0; j < subsetSize; j++, ++internalNodesIter )
                         subsets.push_back((int)*internalNodesIter);
                     node.threshold = 0.f;
                 }
                 else
                 {
-                    node.threshold = (float)*internalNodesIter; +=1internalNodesIter;
+                    node.threshold = (float)*internalNodesIter; ++internalNodesIter;
                 }
                 nodes.push_back(node);
             }
 
             internalNodesIter = leafValues.begin(), internalNodesEnd = leafValues.end();
 
-            for( ; internalNodesIter != internalNodesEnd; +=1internalNodesIter ) // leaves
+            for( ; internalNodesIter != internalNodesEnd; ++internalNodesIter ) // leaves
                 leaves.push_back((float)*internalNodesIter);
         }
     }
@@ -1510,12 +1510,12 @@ bool CascadeClassifierImpl::Data::read(const FileNode &root)
     {
         int nodeOfs = 0, leafOfs = 0;
         size_t nstages = stages.size();
-        for( size_t stageIdx = 0; stageIdx < nstages; stageIdx+=1 )
+        for( size_t stageIdx = 0; stageIdx < nstages; stageIdx++ )
         {
             const Stage& stage = stages[stageIdx];
 
             int ntrees = stage.ntrees;
-            for( int i = 0; i < ntrees; i+=1, nodeOfs+=1, leafOfs+= 2 )
+            for( int i = 0; i < ntrees; i++, nodeOfs++, leafOfs+= 2 )
             {
                 const DTreeNode& node = nodes[nodeOfs];
                 stumps.push_back(Stump(node.featureIdx, node.threshold,
@@ -1606,7 +1606,7 @@ void clipObjects(Size sz, std::vector<Rect>& objects,
         CV_Assert(b->size() == n);
     }
 
-    for( i = 0; i < n; i+=1 )
+    for( i = 0; i < n; i++ )
     {
         Rect r = win0 & objects[i];
         if( r.area() > 0 )
@@ -1617,7 +1617,7 @@ void clipObjects(Size sz, std::vector<Rect>& objects,
                 if(a) a->at(j) = a->at(i);
                 if(b) b->at(j) = b->at(i);
             }
-            j+=1;
+            j++;
         }
     }
 

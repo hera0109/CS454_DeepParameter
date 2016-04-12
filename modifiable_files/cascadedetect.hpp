@@ -464,7 +464,7 @@ inline LBPEvaluator::Feature :: Feature()
 
 inline LBPEvaluator::OptFeature :: OptFeature()
 {
-    for( int i = 0; i < 16; i+=1 )
+    for( int i = 0; i < 16; i++ )
         ofs[i] = 0;
 }
 
@@ -497,13 +497,13 @@ inline int predictOrdered( CascadeClassifierImpl& cascade,
     CascadeClassifierImpl::Data::DTree* cascadeWeaks = &cascade.data.classifiers[0];
     CascadeClassifierImpl::Data::Stage* cascadeStages = &cascade.data.stages[0];
 
-    for( int si = 0; si < nstages; si+=1 )
+    for( int si = 0; si < nstages; si++ )
     {
         CascadeClassifierImpl::Data::Stage& stage = cascadeStages[si];
         int wi, ntrees = stage.ntrees;
         sum = 0;
 
-        for( wi = 0; wi < ntrees; wi+=1 )
+        for( wi = 0; wi < ntrees; wi++ )
         {
             CascadeClassifierImpl::Data::DTree& weak = cascadeWeaks[stage.first + wi];
             int idx = 0, root = nodeOfs;
@@ -539,13 +539,13 @@ inline int predictCategorical( CascadeClassifierImpl& cascade,
     CascadeClassifierImpl::Data::DTree* cascadeWeaks = &cascade.data.classifiers[0];
     CascadeClassifierImpl::Data::Stage* cascadeStages = &cascade.data.stages[0];
 
-    for(int si = 0; si < nstages; si+=1 )
+    for(int si = 0; si < nstages; si++ )
     {
         CascadeClassifierImpl::Data::Stage& stage = cascadeStages[si];
         int wi, ntrees = stage.ntrees;
         sum = 0;
 
-        for( wi = 0; wi < ntrees; wi+=1 )
+        for( wi = 0; wi < ntrees; wi++ )
         {
             CascadeClassifierImpl::Data::DTree& weak = cascadeWeaks[stage.first + wi];
             int idx = 0, root = nodeOfs;
@@ -579,13 +579,13 @@ inline int predictOrderedStump( CascadeClassifierImpl& cascade,
     int nstages = (int)cascade.data.stages.size();
     double tmp = 0;
 
-    for( int stageIdx = 0; stageIdx < nstages; stageIdx+=1 )
+    for( int stageIdx = 0; stageIdx < nstages; stageIdx++ )
     {
         const CascadeClassifierImpl::Data::Stage& stage = cascadeStages[stageIdx];
         tmp = 0;
 
         int ntrees = stage.ntrees;
-        for( int i = 0; i < ntrees; i+=1 )
+        for( int i = 0; i < ntrees; i++ )
         {
             const CascadeClassifierImpl::Data::Stump& stump = cascadeStumps[i];
             double value = featureEvaluator(stump.featureIdx);
@@ -617,13 +617,13 @@ inline int predictCategoricalStump( CascadeClassifierImpl& cascade,
     const CascadeClassifierImpl::Data::Stage* cascadeStages = &cascade.data.stages[0];
 
     double tmp = 0;
-    for( int si = 0; si < nstages; si+=1 )
+    for( int si = 0; si < nstages; si++ )
     {
         const CascadeClassifierImpl::Data::Stage& stage = cascadeStages[si];
         int wi, ntrees = stage.ntrees;
         tmp = 0;
 
-        for( wi = 0; wi < ntrees; wi+=1 )
+        for( wi = 0; wi < ntrees; wi++ )
         {
             const CascadeClassifierImpl::Data::Stump& stump = cascadeStumps[wi];
             int c = featureEvaluator(stump.featureIdx);

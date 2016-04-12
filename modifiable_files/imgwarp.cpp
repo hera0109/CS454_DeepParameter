@@ -69,7 +69,7 @@ namespace cv
     bool IPPSetSimple(cv::Scalar value, void *dataPointer, int step, IppiSize &size, ippiSetFunc func)
     {
         Type values[channels];
-        for( int i = 0; i < channels; i+=1 )
+        for( int i = 0; i < channels; i++ )
             values[i] = saturate_cast<Type>(value[i]);
         return func(values, dataPointer, step, size) >= 0;
     }
@@ -167,7 +167,7 @@ static inline void interpolateLanczos4( float x, float* coeffs )
 
     if( x < FLT_EPSILON )
     {
-        for( int i = 0; i < 8; i+=1 )
+        for( int i = 0; i < 8; i++ )
             coeffs[i] = 0;
         coeffs[3] = 1;
         return;
@@ -175,7 +175,7 @@ static inline void interpolateLanczos4( float x, float* coeffs )
 
     float sum = 0;
     double y0=-(x+3)*CV_PI*0.25, s0 = sin(y0), c0=cos(y0);
-    for(int i = 0; i < 8; i+=1 )
+    for(int i = 0; i < 8; i++ )
     {
         double y = -(x+3-i)*CV_PI*0.25;
         coeffs[i] = (float)((cs[i][0]*s0 + cs[i][1]*c0)/(y*y));
@@ -183,7 +183,7 @@ static inline void interpolateLanczos4( float x, float* coeffs )
     }
 
     sum = 1.f/sum;
-    for(int i = 0; i < 8; i+=1 )
+    for(int i = 0; i < 8; i++ )
         coeffs[i] *= sum;
 }
 
@@ -192,17 +192,17 @@ static void initInterTab1D(int method, float* tab, int tabsz)
     float scale = 1.f/tabsz;
     if( method == INTER_LINEAR )
     {
-        for( int i = 0; i < tabsz; i+=1, tab += 2 )
+        for( int i = 0; i < tabsz; i++, tab += 2 )
             interpolateLinear( i*scale, tab );
     }
     else if( method == INTER_CUBIC )
     {
-        for( int i = 0; i < tabsz; i+=1, tab += 4 )
+        for( int i = 0; i < tabsz; i++, tab += 4 )
             interpolateCubic( i*scale, tab );
     }
     else if( method == INTER_LANCZOS4 )
     {
-        for( int i = 0; i < tabsz; i+=1, tab += 8 )
+        for( int i = 0; i < tabsz; i++, tab += 8 )
             interpolateLanczos4( i*scale, tab );
     }
     else
@@ -230,17 +230,17 @@ static const void* initInterTab2D( int method, bool fixpt )
         AutoBuffer<float> _tab(8*INTER_TAB_SIZE);
         int i, j, k1, k2;
         initInterTab1D(method, _tab, INTER_TAB_SIZE);
-        for( i = 0; i < INTER_TAB_SIZE; i+=1 )
-            for( j = 0; j < INTER_TAB_SIZE; j+=1, tab += ksize*ksize, itab += ksize*ksize )
+        for( i = 0; i < INTER_TAB_SIZE; i++ )
+            for( j = 0; j < INTER_TAB_SIZE; j++, tab += ksize*ksize, itab += ksize*ksize )
             {
                 int isum = 0;
                 NNDeltaTab_i[i*INTER_TAB_SIZE+j][0] = j < INTER_TAB_SIZE/2;
                 NNDeltaTab_i[i*INTER_TAB_SIZE+j][1] = i < INTER_TAB_SIZE/2;
 
-                for( k1 = 0; k1 < ksize; k1+=1 )
+                for( k1 = 0; k1 < ksize; k1++ )
                 {
                     float vy = _tab[i*ksize + k1];
-                    for( k2 = 0; k2 < ksize; k2+=1 )
+                    for( k2 = 0; k2 < ksize; k2++ )
                     {
                         float v = vy*_tab[j*ksize + k2];
                         tab[k1*ksize + k2] = v;
@@ -252,8 +252,8 @@ static const void* initInterTab2D( int method, bool fixpt )
                 {
                     int diff = isum - INTER_REMAP_COEF_SCALE;
                     int ksize2 = ksize/2, Mk1=ksize2, Mk2=ksize2, mk1=ksize2, mk2=ksize2;
-                    for( k1 = ksize2; k1 < ksize2+2; k1+=1 )
-                        for( k2 = ksize2; k2 < ksize2+2; k2+=1 )
+                    for( k1 = ksize2; k1 < ksize2+2; k1++ )
+                        for( k2 = ksize2; k2 < ksize2+2; k2++ )
                         {
                             if( itab[k1*ksize+k2] < itab[mk1*ksize+mk2] )
                                 mk1 = k1, mk2 = k2;
@@ -271,8 +271,8 @@ static const void* initInterTab2D( int method, bool fixpt )
 #if CV_SSE2 || CV_NEON
         if( method == INTER_LINEAR )
         {
-            for( i = 0; i < INTER_TAB_SIZE2; i+=1 )
-                for( j = 0; j < 4; j+=1 )
+            for( i = 0; i < INTER_TAB_SIZE2; i++ )
+                for( j = 0; j < 4; j++ )
                 {
                     BilinearTab_iC4[i][0][j*2] = BilinearTab_i[i][0][0];
                     BilinearTab_iC4[i][0][j*2+1] = BilinearTab_i[i][0][1];
@@ -336,7 +336,7 @@ public:
         Size ssize = src.size(), dsize = dst.size();
         int y, x, pix_size = (int)src.elemSize();
 
-        for( y = range.start; y < range.end; y+=1 )
+        for( y = range.start; y < range.end; y++ )
         {
             uchar* D = dst.data + dst.step*y;
             int sy = std::min(cvFloor(y*ify), ssize.height-1);
@@ -353,26 +353,26 @@ public:
                     D[x+1] = t1;
                 }
 
-                for( ; x < dsize.width; x+=1 )
+                for( ; x < dsize.width; x++ )
                     D[x] = S[x_ofs[x]];
                 break;
             case 2:
-                for( x = 0; x < dsize.width; x+=1 )
+                for( x = 0; x < dsize.width; x++ )
                     *(ushort*)(D + x*2) = *(ushort*)(S + x_ofs[x]);
                 break;
             case 3:
-                for( x = 0; x < dsize.width; x+=1, D += 3 )
+                for( x = 0; x < dsize.width; x++, D += 3 )
                 {
                     const uchar* _tS = S + x_ofs[x];
                     D[0] = _tS[0]; D[1] = _tS[1]; D[2] = _tS[2];
                 }
                 break;
             case 4:
-                for( x = 0; x < dsize.width; x+=1 )
+                for( x = 0; x < dsize.width; x++ )
                     *(int*)(D + x*4) = *(int*)(S + x_ofs[x]);
                 break;
             case 6:
-                for( x = 0; x < dsize.width; x+=1, D += 6 )
+                for( x = 0; x < dsize.width; x++, D += 6 )
                 {
                     const ushort* _tS = (const ushort*)(S + x_ofs[x]);
                     ushort* _tD = (ushort*)D;
@@ -380,7 +380,7 @@ public:
                 }
                 break;
             case 8:
-                for( x = 0; x < dsize.width; x+=1, D += 8 )
+                for( x = 0; x < dsize.width; x++, D += 8 )
                 {
                     const int* _tS = (const int*)(S + x_ofs[x]);
                     int* _tD = (int*)D;
@@ -388,7 +388,7 @@ public:
                 }
                 break;
             case 12:
-                for( x = 0; x < dsize.width; x+=1, D += 12 )
+                for( x = 0; x < dsize.width; x++, D += 12 )
                 {
                     const int* _tS = (const int*)(S + x_ofs[x]);
                     int* _tD = (int*)D;
@@ -396,11 +396,11 @@ public:
                 }
                 break;
             default:
-                for( x = 0; x < dsize.width; x+=1, D += pix_size )
+                for( x = 0; x < dsize.width; x++, D += pix_size )
                 {
                     const int* _tS = (const int*)(S + x_ofs[x]);
                     int* _tD = (int*)D;
-                    for( int k = 0; k < pix_size4; k+=1 )
+                    for( int k = 0; k < pix_size4; k++ )
                         _tD[k] = _tS[k];
                 }
             }
@@ -428,7 +428,7 @@ resizeNN( const Mat& src, Mat& dst, double fx, double fy )
     double ifx = 1./fx, ify = 1./fy;
     int x;
 
-    for( x = 0; x < dsize.width; x+=1 )
+    for( x = 0; x < dsize.width; x++ )
     {
         int sx = cvFloor(x*ifx);
         x_ofs[x] = std::min(sx, ssize.width-1)*pix_size;
@@ -1406,11 +1406,11 @@ struct HResizeLinear
         int dx0 = vecOp((const uchar**)src, (uchar**)dst, count,
             xofs, (const uchar*)alpha, swidth, dwidth, cn, xmin, xmax );
 
-        for( k = 0; k <= count - 2; k+=1 )
+        for( k = 0; k <= count - 2; k++ )
         {
             const T *S0 = src[k], *S1 = src[k+1];
             WT *D0 = dst[k], *D1 = dst[k+1];
-            for( dx = dx0; dx < xmax; dx+=1 )
+            for( dx = dx0; dx < xmax; dx++ )
             {
                 int sx = xofs[dx];
                 WT a0 = alpha[dx*2], a1 = alpha[dx*2+1];
@@ -1419,24 +1419,24 @@ struct HResizeLinear
                 D0[dx] = t0; D1[dx] = t1;
             }
 
-            for( ; dx < dwidth; dx+=1 )
+            for( ; dx < dwidth; dx++ )
             {
                 int sx = xofs[dx];
                 D0[dx] = WT(S0[sx]*ONE); D1[dx] = WT(S1[sx]*ONE);
             }
         }
 
-        for( ; k < count; k+=1 )
+        for( ; k < count; k++ )
         {
             const T *S = src[k];
             WT *D = dst[k];
-            for( dx = 0; dx < xmax; dx+=1 )
+            for( dx = 0; dx < xmax; dx++ )
             {
                 int sx = xofs[dx];
                 D[dx] = S[sx]*alpha[dx*2] + S[sx+cn]*alpha[dx*2+1];
             }
 
-            for( ; dx < dwidth; dx+=1 )
+            for( ; dx < dwidth; dx++ )
                 D[dx] = WT(S[xofs[dx]]*ONE);
         }
     }
@@ -1470,7 +1470,7 @@ struct VResizeLinear
             dst[x+2] = castOp(t0); dst[x+3] = castOp(t1);
         }
         #endif
-        for( ; x < width; x+=1 )
+        for( ; x < width; x++ )
             dst[x] = castOp(S0[x]*b0 + S1[x]*b1);
     }
 };
@@ -1498,7 +1498,7 @@ struct VResizeLinear<uchar, int, short, FixedPtCast<int, uchar, INTER_RESIZE_COE
             dst[x+3] = uchar(( ((b0 * (S0[x+3] >> 4)) >> 16) + ((b1 * (S1[x+3] >> 4)) >> 16) + 2)>>2);
         }
         #endif
-        for( ; x < width; x+=1 )
+        for( ; x < width; x++ )
             dst[x] = uchar(( ((b0 * (S0[x] >> 4)) >> 16) + ((b1 * (S1[x] >> 4)) >> 16) + 2)>>2);
     }
 };
@@ -1515,18 +1515,18 @@ struct HResizeCubic
                     const int* xofs, const AT* alpha,
                     int swidth, int dwidth, int cn, int xmin, int xmax ) const
     {
-        for( int k = 0; k < count; k+=1 )
+        for( int k = 0; k < count; k++ )
         {
             const T *S = src[k];
             WT *D = dst[k];
             int dx = 0, limit = xmin;
             for(;;)
             {
-                for( ; dx < limit; dx+=1, alpha += 4 )
+                for( ; dx < limit; dx++, alpha += 4 )
                 {
                     int j, sx = xofs[dx] - cn;
                     WT v = 0;
-                    for( j = 0; j < 4; j+=1 )
+                    for( j = 0; j < 4; j++ )
                     {
                         int sxj = sx + j*cn;
                         if( (unsigned)sxj >= (unsigned)swidth )
@@ -1542,7 +1542,7 @@ struct HResizeCubic
                 }
                 if( limit == dwidth )
                     break;
-                for( ; dx < xmax; dx+=1, alpha += 4 )
+                for( ; dx < xmax; dx++, alpha += 4 )
                 {
                     int sx = xofs[dx];
                     D[dx] = S[sx-cn]*alpha[0] + S[sx]*alpha[1] +
@@ -1571,7 +1571,7 @@ struct VResizeCubic
         VecOp vecOp;
 
         int x = vecOp((const uchar**)src, (uchar*)dst, (const uchar*)beta, width);
-        for( ; x < width; x+=1 )
+        for( ; x < width; x++ )
             dst[x] = castOp(S0[x]*b0 + S1[x]*b1 + S2[x]*b2 + S3[x]*b3);
     }
 };
@@ -1588,18 +1588,18 @@ struct HResizeLanczos4
                     const int* xofs, const AT* alpha,
                     int swidth, int dwidth, int cn, int xmin, int xmax ) const
     {
-        for( int k = 0; k < count; k+=1 )
+        for( int k = 0; k < count; k++ )
         {
             const T *S = src[k];
             WT *D = dst[k];
             int dx = 0, limit = xmin;
             for(;;)
             {
-                for( ; dx < limit; dx+=1, alpha += 8 )
+                for( ; dx < limit; dx++, alpha += 8 )
                 {
                     int j, sx = xofs[dx] - cn*3;
                     WT v = 0;
-                    for( j = 0; j < 8; j+=1 )
+                    for( j = 0; j < 8; j++ )
                     {
                         int sxj = sx + j*cn;
                         if( (unsigned)sxj >= (unsigned)swidth )
@@ -1615,7 +1615,7 @@ struct HResizeLanczos4
                 }
                 if( limit == dwidth )
                     break;
-                for( ; dx < xmax; dx+=1, alpha += 8 )
+                for( ; dx < xmax; dx++, alpha += 8 )
                 {
                     int sx = xofs[dx];
                     D[dx] = S[sx-cn*3]*alpha[0] + S[sx-cn*2]*alpha[1] +
@@ -1650,7 +1650,7 @@ struct VResizeLanczos4
             const WT* S = src[0];
             WT s0 = S[x]*b, s1 = S[x+1]*b, s2 = S[x+2]*b, s3 = S[x+3]*b;
 
-            for( k = 1; k < 8; k+=1 )
+            for( k = 1; k < 8; k++ )
             {
                 b = beta[k]; S = src[k];
                 s0 += S[x]*b; s1 += S[x+1]*b;
@@ -1661,7 +1661,7 @@ struct VResizeLanczos4
             dst[x+2] = castOp(s2); dst[x+3] = castOp(s3);
         }
         #endif
-        for( ; x < width; x+=1 )
+        for( ; x < width; x++ )
         {
             dst[x] = castOp(src[0][x]*beta[0] + src[1][x]*beta[1] +
                 src[2][x]*beta[2] + src[3][x]*beta[3] + src[4][x]*beta[4] +
@@ -1713,7 +1713,7 @@ public:
         WT* rows[MAX_ESIZE]={0};
         int prev_sy[MAX_ESIZE];
 
-        for(int k = 0; k < ksize; k+=1 )
+        for(int k = 0; k < ksize; k++ )
         {
             prev_sy[k] = -1;
             rows[k] = (WT*)_buffer + bufstep*k;
@@ -1721,14 +1721,14 @@ public:
 
         const AT* beta = _beta + ksize * range.start;
 
-        for( dy = range.start; dy < range.end; dy+=1, beta += ksize )
+        for( dy = range.start; dy < range.end; dy++, beta += ksize )
         {
             int sy0 = yofs[dy], k0=ksize, k1=0, ksize2 = ksize/2;
 
-            for(int k = 0; k < ksize; k+=1 )
+            for(int k = 0; k < ksize; k++ )
             {
                 int sy = clip(sy0 - ksize2 + 1 + k, 0, ssize.height);
-                for( k1 = std::max(k1, k); k1 < ksize; k1+=1 )
+                for( k1 = std::max(k1, k); k1 < ksize; k1++ )
                 {
                     if( sy == prev_sy[k1] ) // if the sy-th row has been computed already, reuse it.
                     {
@@ -2365,7 +2365,7 @@ struct ResizeAreaFastVec
         int dx = vecOp(S, D, w);
 
         if (cn == 1)
-            for( ; dx < w; +=1dx )
+            for( ; dx < w; ++dx )
             {
                 int index = dx*2;
                 D[dx] = (T)((S[index] + S[index+1] + nextS[index] + nextS[index+1] + 2) >> 2);
@@ -2427,7 +2427,7 @@ public:
 
         VecOp vop(scale_x, scale_y, src.channels(), (int)src.step/*, area_ofs*/);
 
-        for( dy = range.start; dy < range.end; dy+=1 )
+        for( dy = range.start; dy < range.end; dy++ )
         {
             T* D = (T*)(dst.data + dst.step*dy);
             int sy0 = dy*scale_y;
@@ -2435,13 +2435,13 @@ public:
 
             if( sy0 >= ssize.height )
             {
-                for( dx = 0; dx < dsize.width; dx+=1 )
+                for( dx = 0; dx < dsize.width; dx++ )
                     D[dx] = 0;
                 continue;
             }
 
             dx = vop(src.template ptr<T>(sy0), D, w);
-            for( ; dx < w; dx+=1 )
+            for( ; dx < w; dx++ )
             {
                 const T* S = src.template ptr<T>(sy0) + xofs[dx];
                 WT sum = 0;
@@ -2450,20 +2450,20 @@ public:
                 for( ; k <= area - 4; k += 4 )
                     sum += S[ofs[k]] + S[ofs[k+1]] + S[ofs[k+2]] + S[ofs[k+3]];
                 #endif
-                for( ; k < area; k+=1 )
+                for( ; k < area; k++ )
                     sum += S[ofs[k]];
 
                 D[dx] = saturate_cast<T>(sum * scale);
             }
 
-            for( ; dx < dsize.width; dx+=1 )
+            for( ; dx < dsize.width; dx++ )
             {
                 WT sum = 0;
                 int count = 0, sx0 = xofs[dx];
                 if( sx0 >= ssize.width )
                     D[dx] = 0;
 
-                for( int sy = 0; sy < scale_y; sy+=1 )
+                for( int sy = 0; sy < scale_y; sy++ )
                 {
                     if( sy0 + sy >= ssize.height )
                         break;
@@ -2473,7 +2473,7 @@ public:
                         if( sx0 + sx >= ssize.width )
                             break;
                         sum += S[sx];
-                        count+=1;
+                        count++;
                     }
                 }
 
@@ -2535,10 +2535,10 @@ public:
         WT *buf = _buffer, *sum = buf + dsize.width;
         int j_start = tabofs[range.start], j_end = tabofs[range.end], j, k, dx, prev_dy = ytab[j_start].di;
 
-        for( dx = 0; dx < dsize.width; dx+=1 )
+        for( dx = 0; dx < dsize.width; dx++ )
             sum[dx] = (WT)0;
 
-        for( j = j_start; j < j_end; j+=1 )
+        for( j = j_start; j < j_end; j++ )
         {
             WT beta = ytab[j].alpha;
             int dy = ytab[j].di;
@@ -2546,18 +2546,18 @@ public:
 
             {
                 const T* S = src->template ptr<T>(sy);
-                for( dx = 0; dx < dsize.width; dx+=1 )
+                for( dx = 0; dx < dsize.width; dx++ )
                     buf[dx] = (WT)0;
 
                 if( cn == 1 )
-                    for( k = 0; k < xtab_size; k+=1 )
+                    for( k = 0; k < xtab_size; k++ )
                     {
                         int dxn = xtab[k].di;
                         WT alpha = xtab[k].alpha;
                         buf[dxn] += S[xtab[k].si]*alpha;
                     }
                 else if( cn == 2 )
-                    for( k = 0; k < xtab_size; k+=1 )
+                    for( k = 0; k < xtab_size; k++ )
                     {
                         int sxn = xtab[k].si;
                         int dxn = xtab[k].di;
@@ -2567,7 +2567,7 @@ public:
                         buf[dxn] = t0; buf[dxn+1] = t1;
                     }
                 else if( cn == 3 )
-                    for( k = 0; k < xtab_size; k+=1 )
+                    for( k = 0; k < xtab_size; k++ )
                     {
                         int sxn = xtab[k].si;
                         int dxn = xtab[k].di;
@@ -2579,7 +2579,7 @@ public:
                     }
                 else if( cn == 4 )
                 {
-                    for( k = 0; k < xtab_size; k+=1 )
+                    for( k = 0; k < xtab_size; k++ )
                     {
                         int sxn = xtab[k].si;
                         int dxn = xtab[k].di;
@@ -2594,12 +2594,12 @@ public:
                 }
                 else
                 {
-                    for( k = 0; k < xtab_size; k+=1 )
+                    for( k = 0; k < xtab_size; k++ )
                     {
                         int sxn = xtab[k].si;
                         int dxn = xtab[k].di;
                         WT alpha = xtab[k].alpha;
-                        for( int c = 0; c < cn; c+=1 )
+                        for( int c = 0; c < cn; c++ )
                             buf[dxn + c] += S[sxn + c]*alpha;
                     }
                 }
@@ -2609,7 +2609,7 @@ public:
             {
                 T* D = dst->template ptr<T>(prev_dy);
 
-                for( dx = 0; dx < dsize.width; dx+=1 )
+                for( dx = 0; dx < dsize.width; dx++ )
                 {
                     D[dx] = saturate_cast<T>(sum[dx]);
                     sum[dx] = beta*buf[dx];
@@ -2618,14 +2618,14 @@ public:
             }
             else
             {
-                for( dx = 0; dx < dsize.width; dx+=1 )
+                for( dx = 0; dx < dsize.width; dx++ )
                     sum[dx] += beta*buf[dx];
             }
         }
 
         {
         T* D = dst->template ptr<T>(prev_dy);
-        for( dx = 0; dx < dsize.width; dx+=1 )
+        for( dx = 0; dx < dsize.width; dx++ )
             D[dx] = saturate_cast<T>(sum[dx]);
         }
     }
@@ -2670,7 +2670,7 @@ typedef void (*ResizeAreaFunc)( const Mat& src, Mat& dst,
 static int computeResizeAreaTab( int ssize, int dsize, int cn, double scale, DecimateAlpha* tab )
 {
     int k = 0;
-    for(int dx = 0; dx < dsize; dx+=1 )
+    for(int dx = 0; dx < dsize; dx++ )
     {
         double fsx1 = dx * scale;
         double fsx2 = fsx1 + scale;
@@ -2686,15 +2686,15 @@ static int computeResizeAreaTab( int ssize, int dsize, int cn, double scale, Dec
             assert( k < ssize*2 );
             tab[k].di = dx * cn;
             tab[k].si = (sx1 - 1) * cn;
-            tab[k+=1].alpha = (float)((sx1 - fsx1) / cellWidth);
+            tab[k++].alpha = (float)((sx1 - fsx1) / cellWidth);
         }
 
-        for(int sx = sx1; sx < sx2; sx+=1 )
+        for(int sx = sx1; sx < sx2; sx++ )
         {
             assert( k < ssize*2 );
             tab[k].di = dx * cn;
             tab[k].si = sx * cn;
-            tab[k+=1].alpha = float(1.0 / cellWidth);
+            tab[k++].alpha = float(1.0 / cellWidth);
         }
 
         if( fsx2 - sx2 > 1e-3 )
@@ -2702,7 +2702,7 @@ static int computeResizeAreaTab( int ssize, int dsize, int cn, double scale, Dec
             assert( k < ssize*2 );
             tab[k].di = dx * cn;
             tab[k].si = sx2 * cn;
-            tab[k+=1].alpha = (float)(std::min(std::min(fsx2 - sx2, 1.), cellWidth) / cellWidth);
+            tab[k++].alpha = (float)(std::min(std::min(fsx2 - sx2, 1.), cellWidth) / cellWidth);
         }
     }
     return k;
@@ -2841,7 +2841,7 @@ static void ocl_computeResizeAreaTabs(int ssize, int dsize, double scale, int * 
                                       float * const alpha_tab, int * const ofs_tab)
 {
     int k = 0, dx = 0;
-    for ( ; dx < dsize; dx+=1)
+    for ( ; dx < dsize; dx++)
     {
         ofs_tab[dx] = k;
 
@@ -2857,19 +2857,19 @@ static void ocl_computeResizeAreaTabs(int ssize, int dsize, double scale, int * 
         if (sx1 - fsx1 > 1e-3)
         {
             map_tab[k] = sx1 - 1;
-            alpha_tab[k+=1] = (float)((sx1 - fsx1) / cellWidth);
+            alpha_tab[k++] = (float)((sx1 - fsx1) / cellWidth);
         }
 
-        for (int sx = sx1; sx < sx2; sx+=1)
+        for (int sx = sx1; sx < sx2; sx++)
         {
             map_tab[k] = sx;
-            alpha_tab[k+=1] = float(1.0 / cellWidth);
+            alpha_tab[k++] = float(1.0 / cellWidth);
         }
 
         if (fsx2 - sx2 > 1e-3)
         {
             map_tab[k] = sx2;
-            alpha_tab[k+=1] = (float)(std::min(std::min(fsx2 - sx2, 1.), cellWidth) / cellWidth);
+            alpha_tab[k++] = (float)(std::min(std::min(fsx2 - sx2, 1.), cellWidth) / cellWidth);
         }
     }
     ofs_tab[dx] = k;
@@ -2948,7 +2948,7 @@ static bool ocl_resize( InputArray _src, OutputArray _dst, Size dsize,
             float fxx, fyy;
             int sx, sy;
 
-            for (int dx = 0; dx < dsize.width; dx+=1)
+            for (int dx = 0; dx < dsize.width; dx++)
             {
                 fxx = (float)((dx+0.5)*inv_fx - 0.5);
                 sx = cvFloor(fxx);
@@ -2965,7 +2965,7 @@ static bool ocl_resize( InputArray _src, OutputArray _dst, Size dsize,
                 ialpha[dx*2 + 1] = saturate_cast<short>(fxx         * INTER_RESIZE_COEF_SCALE);
             }
 
-            for (int dy = 0; dy < dsize.height; dy+=1)
+            for (int dy = 0; dy < dsize.height; dy++)
             {
                 fyy = (float)((dy+0.5)*inv_fy - 0.5);
                 sy = cvFloor(fyy);
@@ -3318,15 +3318,15 @@ void cv::resize( InputArray _src, OutputArray _dst, Size dsize,
                 ResizeAreaFastFunc func = areafast_tab[depth];
                 CV_Assert( func != 0 );
 
-                for( sy = 0, k = 0; sy < iscale_y; sy+=1 )
-                    for( sx = 0; sx < iscale_x; sx+=1 )
-                        ofs[k+=1] = (int)(sy*srcstep + sx*cn);
+                for( sy = 0, k = 0; sy < iscale_y; sy++ )
+                    for( sx = 0; sx < iscale_x; sx++ )
+                        ofs[k++] = (int)(sy*srcstep + sx*cn);
 
-                for( dx = 0; dx < dsize.width; dx+=1 )
+                for( dx = 0; dx < dsize.width; dx++ )
                 {
                     int j = dx * cn;
                     sx = iscale_x * j;
-                    for( k = 0; k < cn; k+=1 )
+                    for( k = 0; k < cn; k++ )
                         xofs[j + k] = sx + k;
                 }
 
@@ -3345,12 +3345,12 @@ void cv::resize( InputArray _src, OutputArray _dst, Size dsize,
 
             AutoBuffer<int> _tabofs(dsize.height + 1);
             int* tabofs = _tabofs;
-            for( k = 0, dy = 0; k < ytab_size; k+=1 )
+            for( k = 0, dy = 0; k < ytab_size; k++ )
             {
                 if( k == 0 || ytab[k].di != ytab[k-1].di )
                 {
                     assert( ytab[k].di == dy );
-                    tabofs[dy+=1] = k;
+                    tabofs[dy++] = k;
                 }
             }
             tabofs[dy] = ytab_size;
@@ -3387,7 +3387,7 @@ void cv::resize( InputArray _src, OutputArray _dst, Size dsize,
     short* ibeta = ialpha + width*ksize;
     float cbuf[MAX_ESIZE];
 
-    for( dx = 0; dx < dsize.width; dx+=1 )
+    for( dx = 0; dx < dsize.width; dx++ )
     {
         if( !area_mode )
         {
@@ -3416,7 +3416,7 @@ void cv::resize( InputArray _src, OutputArray _dst, Size dsize,
                 fx = 0, sx = ssize.width-1;
         }
 
-        for( k = 0, sx *= cn; k < cn; k+=1 )
+        for( k = 0, sx *= cn; k < cn; k++ )
             xofs[dx*cn + k] = sx + k;
 
         if( interpolation == INTER_CUBIC )
@@ -3430,21 +3430,21 @@ void cv::resize( InputArray _src, OutputArray _dst, Size dsize,
         }
         if( fixpt )
         {
-            for( k = 0; k < ksize; k+=1 )
+            for( k = 0; k < ksize; k++ )
                 ialpha[dx*cn*ksize + k] = saturate_cast<short>(cbuf[k]*INTER_RESIZE_COEF_SCALE);
-            for( ; k < cn*ksize; k+=1 )
+            for( ; k < cn*ksize; k++ )
                 ialpha[dx*cn*ksize + k] = ialpha[dx*cn*ksize + k - ksize];
         }
         else
         {
-            for( k = 0; k < ksize; k+=1 )
+            for( k = 0; k < ksize; k++ )
                 alpha[dx*cn*ksize + k] = cbuf[k];
-            for( ; k < cn*ksize; k+=1 )
+            for( ; k < cn*ksize; k++ )
                 alpha[dx*cn*ksize + k] = alpha[dx*cn*ksize + k - ksize];
         }
     }
 
-    for( dy = 0; dy < dsize.height; dy+=1 )
+    for( dy = 0; dy < dsize.height; dy++ )
     {
         if( !area_mode )
         {
@@ -3472,12 +3472,12 @@ void cv::resize( InputArray _src, OutputArray _dst, Size dsize,
 
         if( fixpt )
         {
-            for( k = 0; k < ksize; k+=1 )
+            for( k = 0; k < ksize; k++ )
                 ibeta[dy*ksize + k] = saturate_cast<short>(cbuf[k]*INTER_RESIZE_COEF_SCALE);
         }
         else
         {
-            for( k = 0; k < ksize; k+=1 )
+            for( k = 0; k < ksize; k++ )
                 beta[dy*ksize + k] = cbuf[k];
         }
     }
@@ -3516,14 +3516,14 @@ static void remapNearest( const Mat& _src, Mat& _dst, const Mat& _xy,
         dsize.height = 1;
     }
 
-    for( dy = 0; dy < dsize.height; dy+=1 )
+    for( dy = 0; dy < dsize.height; dy++ )
     {
         T* D = _dst.ptr<T>(dy);
         const short* XY = _xy.ptr<short>(dy);
 
         if( cn == 1 )
         {
-            for( dx = 0; dx < dsize.width; dx+=1 )
+            for( dx = 0; dx < dsize.width; dx++ )
             {
                 int sx = XY[dx*2], sy = XY[dx*2+1];
                 if( (unsigned)sx < width1 && (unsigned)sy < height1 )
@@ -3549,7 +3549,7 @@ static void remapNearest( const Mat& _src, Mat& _dst, const Mat& _xy,
         }
         else
         {
-            for( dx = 0; dx < dsize.width; dx+=1, D += cn )
+            for( dx = 0; dx < dsize.width; dx++, D += cn )
             {
                 int sx = XY[dx*2], sy = XY[dx*2+1], k;
                 const T *S;
@@ -3568,7 +3568,7 @@ static void remapNearest( const Mat& _src, Mat& _dst, const Mat& _xy,
                     else
                     {
                         S = S0 + sy*sstep + sx*cn;
-                        for( k = 0; k < cn; k+=1 )
+                        for( k = 0; k < cn; k++ )
                             D[k] = S[k];
                     }
                 }
@@ -3588,7 +3588,7 @@ static void remapNearest( const Mat& _src, Mat& _dst, const Mat& _xy,
                         sy = borderInterpolate(sy, ssize.height, borderType);
                         S = S0 + sy*sstep + sx*cn;
                     }
-                    for( k = 0; k < cn; k+=1 )
+                    for( k = 0; k < cn; k++ )
                         D[k] = S[k];
                 }
             }
@@ -3827,7 +3827,7 @@ static void remapBilinear( const Mat& _src, Mat& _dst, const Mat& _xy,
     CastOp castOp;
     VecOp vecOp;
 
-    for( k = 0; k < cn; k+=1 )
+    for( k = 0; k < cn; k++ )
         cval[k] = saturate_cast<T>(_borderValue[k & 3]);
 
     unsigned width1 = std::max(ssize.width-1, 0), height1 = std::max(ssize.height-1, 0);
@@ -3837,7 +3837,7 @@ static void remapBilinear( const Mat& _src, Mat& _dst, const Mat& _xy,
         width1 = std::max(ssize.width-2, 0);
 #endif
 
-    for( dy = 0; dy < dsize.height; dy+=1 )
+    for( dy = 0; dy < dsize.height; dy++ )
     {
         T* D = _dst.ptr<T>(dy);
         const short* XY = _xy.ptr<short>(dy);
@@ -3845,7 +3845,7 @@ static void remapBilinear( const Mat& _src, Mat& _dst, const Mat& _xy,
         int X0 = 0;
         bool prevInlier = false;
 
-        for( dx = 0; dx <= dsize.width; dx+=1 )
+        for( dx = 0; dx <= dsize.width; dx++ )
         {
             bool curInlier = dx < dsize.width ?
                 (unsigned)XY[dx*2] < width1 &&
@@ -3866,7 +3866,7 @@ static void remapBilinear( const Mat& _src, Mat& _dst, const Mat& _xy,
 
                 if( cn == 1 )
                 {
-                    for( ; dx < X1; dx+=1, D+=1 )
+                    for( ; dx < X1; dx++, D++ )
                     {
                         int sx = XY[dx*2], sy = XY[dx*2+1];
                         const AT* w = wtab + FXY[dx]*4;
@@ -3875,7 +3875,7 @@ static void remapBilinear( const Mat& _src, Mat& _dst, const Mat& _xy,
                     }
                 }
                 else if( cn == 2 )
-                    for( ; dx < X1; dx+=1, D += 2 )
+                    for( ; dx < X1; dx++, D += 2 )
                     {
                         int sx = XY[dx*2], sy = XY[dx*2+1];
                         const AT* w = wtab + FXY[dx]*4;
@@ -3885,7 +3885,7 @@ static void remapBilinear( const Mat& _src, Mat& _dst, const Mat& _xy,
                         D[0] = castOp(t0); D[1] = castOp(t1);
                     }
                 else if( cn == 3 )
-                    for( ; dx < X1; dx+=1, D += 3 )
+                    for( ; dx < X1; dx++, D += 3 )
                     {
                         int sx = XY[dx*2], sy = XY[dx*2+1];
                         const AT* w = wtab + FXY[dx]*4;
@@ -3896,7 +3896,7 @@ static void remapBilinear( const Mat& _src, Mat& _dst, const Mat& _xy,
                         D[0] = castOp(t0); D[1] = castOp(t1); D[2] = castOp(t2);
                     }
                 else if( cn == 4 )
-                    for( ; dx < X1; dx+=1, D += 4 )
+                    for( ; dx < X1; dx++, D += 4 )
                     {
                         int sx = XY[dx*2], sy = XY[dx*2+1];
                         const AT* w = wtab + FXY[dx]*4;
@@ -3909,12 +3909,12 @@ static void remapBilinear( const Mat& _src, Mat& _dst, const Mat& _xy,
                         D[2] = castOp(t0); D[3] = castOp(t1);
                     }
                 else
-                    for( ; dx < X1; dx+=1, D += cn )
+                    for( ; dx < X1; dx++, D += cn )
                     {
                         int sx = XY[dx*2], sy = XY[dx*2+1];
                         const AT* w = wtab + FXY[dx]*4;
                         const T* S = S0 + sy*sstep + sx*cn;
-                        for( k = 0; k < cn; k+=1 )
+                        for( k = 0; k < cn; k++ )
                         {
                             WT t0 = S[k]*w[0] + S[k+cn]*w[1] + S[sstep+k]*w[2] + S[sstep+k+cn]*w[3];
                             D[k] = castOp(t0);
@@ -3931,7 +3931,7 @@ static void remapBilinear( const Mat& _src, Mat& _dst, const Mat& _xy,
                 }
 
                 if( cn == 1 )
-                    for( ; dx < X1; dx+=1, D+=1 )
+                    for( ; dx < X1; dx++, D++ )
                     {
                         int sx = XY[dx*2], sy = XY[dx*2+1];
                         if( borderType == BORDER_CONSTANT &&
@@ -3971,14 +3971,14 @@ static void remapBilinear( const Mat& _src, Mat& _dst, const Mat& _xy,
                         }
                     }
                 else
-                    for( ; dx < X1; dx+=1, D += cn )
+                    for( ; dx < X1; dx++, D += cn )
                     {
                         int sx = XY[dx*2], sy = XY[dx*2+1];
                         if( borderType == BORDER_CONSTANT &&
                             (sx >= ssize.width || sx+1 < 0 ||
                              sy >= ssize.height || sy+1 < 0) )
                         {
-                            for( k = 0; k < cn; k+=1 )
+                            for( k = 0; k < cn; k++ )
                                 D[k] = cval[k];
                         }
                         else
@@ -4012,7 +4012,7 @@ static void remapBilinear( const Mat& _src, Mat& _dst, const Mat& _xy,
                                 v2 = sx0 >= 0 && sy1 >= 0 ? S0 + sy1*sstep + sx0*cn : &cval[0];
                                 v3 = sx1 >= 0 && sy1 >= 0 ? S0 + sy1*sstep + sx1*cn : &cval[0];
                             }
-                            for( k = 0; k < cn; k+=1 )
+                            for( k = 0; k < cn; k++ )
                                 D[k] = castOp(WT(v0[k]*w[0] + v1[k]*w[1] + v2[k]*w[2] + v3[k]*w[3]));
                         }
                     }
@@ -4050,13 +4050,13 @@ static void remapBicubic( const Mat& _src, Mat& _dst, const Mat& _xy,
         dsize.height = 1;
     }
 
-    for( dy = 0; dy < dsize.height; dy+=1 )
+    for( dy = 0; dy < dsize.height; dy++ )
     {
         T* D = _dst.ptr<T>(dy);
         const short* XY = _xy.ptr<short>(dy);
         const ushort* FXY = _fxy.ptr<ushort>(dy);
 
-        for( dx = 0; dx < dsize.width; dx+=1, D += cn )
+        for( dx = 0; dx < dsize.width; dx++, D += cn )
         {
             int sx = XY[dx*2]-1, sy = XY[dx*2+1]-1;
             const AT* w = wtab + FXY[dx]*16;
@@ -4064,7 +4064,7 @@ static void remapBicubic( const Mat& _src, Mat& _dst, const Mat& _xy,
             if( (unsigned)sx < width1 && (unsigned)sy < height1 )
             {
                 const T* S = S0 + sy*sstep + sx*cn;
-                for( k = 0; k < cn; k+=1 )
+                for( k = 0; k < cn; k++ )
                 {
                     WT sum = S[0]*w[0] + S[cn]*w[1] + S[cn*2]*w[2] + S[cn*3]*w[3];
                     S += sstep;
@@ -4089,21 +4089,21 @@ static void remapBicubic( const Mat& _src, Mat& _dst, const Mat& _xy,
                     (sx >= ssize.width || sx+4 <= 0 ||
                     sy >= ssize.height || sy+4 <= 0))
                 {
-                    for( k = 0; k < cn; k+=1 )
+                    for( k = 0; k < cn; k++ )
                         D[k] = cval[k];
                     continue;
                 }
 
-                for( i = 0; i < 4; i+=1 )
+                for( i = 0; i < 4; i++ )
                 {
                     x[i] = borderInterpolate(sx + i, ssize.width, borderType1)*cn;
                     y[i] = borderInterpolate(sy + i, ssize.height, borderType1);
                 }
 
-                for( k = 0; k < cn; k+=1, S0+=1, w -= 16 )
+                for( k = 0; k < cn; k++, S0++, w -= 16 )
                 {
                     WT cv = cval[k], sum = cv*ONE;
-                    for( i = 0; i < 4; i+=1, w += 4 )
+                    for( i = 0; i < 4; i++, w += 4 )
                     {
                         int yi = y[i];
                         const T* S = S0 + yi*sstep;
@@ -4155,13 +4155,13 @@ static void remapLanczos4( const Mat& _src, Mat& _dst, const Mat& _xy,
         dsize.height = 1;
     }
 
-    for( dy = 0; dy < dsize.height; dy+=1 )
+    for( dy = 0; dy < dsize.height; dy++ )
     {
         T* D = _dst.ptr<T>(dy);
         const short* XY = _xy.ptr<short>(dy);
         const ushort* FXY = _fxy.ptr<ushort>(dy);
 
-        for( dx = 0; dx < dsize.width; dx+=1, D += cn )
+        for( dx = 0; dx < dsize.width; dx++, D += cn )
         {
             int sx = XY[dx*2]-3, sy = XY[dx*2+1]-3;
             const AT* w = wtab + FXY[dx]*64;
@@ -4169,10 +4169,10 @@ static void remapLanczos4( const Mat& _src, Mat& _dst, const Mat& _xy,
             int i, k;
             if( (unsigned)sx < width1 && (unsigned)sy < height1 )
             {
-                for( k = 0; k < cn; k+=1 )
+                for( k = 0; k < cn; k++ )
                 {
                     WT sum = 0;
-                    for( int r = 0; r < 8; r+=1, S += sstep, w += 8 )
+                    for( int r = 0; r < 8; r++, S += sstep, w += 8 )
                         sum += S[0]*w[0] + S[cn]*w[1] + S[cn*2]*w[2] + S[cn*3]*w[3] +
                             S[cn*4]*w[4] + S[cn*5]*w[5] + S[cn*6]*w[6] + S[cn*7]*w[7];
                     w -= 64;
@@ -4192,21 +4192,21 @@ static void remapLanczos4( const Mat& _src, Mat& _dst, const Mat& _xy,
                     (sx >= ssize.width || sx+8 <= 0 ||
                     sy >= ssize.height || sy+8 <= 0))
                 {
-                    for( k = 0; k < cn; k+=1 )
+                    for( k = 0; k < cn; k++ )
                         D[k] = cval[k];
                     continue;
                 }
 
-                for( i = 0; i < 8; i+=1 )
+                for( i = 0; i < 8; i++ )
                 {
                     x[i] = borderInterpolate(sx + i, ssize.width, borderType1)*cn;
                     y[i] = borderInterpolate(sy + i, ssize.height, borderType1);
                 }
 
-                for( k = 0; k < cn; k+=1, S0+=1, w -= 64 )
+                for( k = 0; k < cn; k++, S0++, w -= 64 )
                 {
                     WT cv = cval[k], sum = cv*ONE;
-                    for( i = 0; i < 8; i+=1, w += 8 )
+                    for( i = 0; i < 8; i++, w += 8 )
                     {
                         int yi = y[i];
                         const T* S1 = S0 + yi*sstep;
@@ -4288,13 +4288,13 @@ public:
                         bufxy = (*m1)(Rect(x, y, bcols, brows));
                     else if( map_depth != CV_32F )
                     {
-                        for( y1 = 0; y1 < brows; y1+=1 )
+                        for( y1 = 0; y1 < brows; y1++ )
                         {
                             short* XY = bufxy.ptr<short>(y1);
                             const short* sXY = m1->ptr<short>(y+y1) + x*2;
                             const ushort* sA = m2->ptr<ushort>(y+y1) + x;
 
-                            for( x1 = 0; x1 < bcols; x1+=1 )
+                            for( x1 = 0; x1 < bcols; x1++ )
                             {
                                 int a = sA[x1] & (INTER_TAB_SIZE2-1);
                                 XY[x1*2] = sXY[x1*2] + NNDeltaTab_i[a][0];
@@ -4306,7 +4306,7 @@ public:
                         (*m1)(Rect(x, y, bcols, brows)).convertTo(bufxy, bufxy.depth());
                     else
                     {
-                        for( y1 = 0; y1 < brows; y1+=1 )
+                        for( y1 = 0; y1 < brows; y1++ )
                         {
                             short* XY = bufxy.ptr<short>(y1);
                             const float* sX = m1->ptr<float>(y+y1) + x;
@@ -4336,7 +4336,7 @@ public:
                             }
                         #endif
 
-                            for( ; x1 < bcols; x1+=1 )
+                            for( ; x1 < bcols; x1++ )
                             {
                                 XY[x1*2] = saturate_cast<short>(sX[x1]);
                                 XY[x1*2+1] = saturate_cast<short>(sY[x1]);
@@ -4348,7 +4348,7 @@ public:
                 }
 
                 Mat bufa(_bufa, Rect(0, 0, bcols, brows));
-                for( y1 = 0; y1 < brows; y1+=1 )
+                for( y1 = 0; y1 < brows; y1++ )
                 {
                     short* XY = bufxy.ptr<short>(y1);
                     ushort* A = bufa.ptr<ushort>(y1);
@@ -4370,7 +4370,7 @@ public:
                             _mm_storeu_si128((__m128i *)(A + x1), _mm_and_si128(_mm_loadu_si128((const __m128i *)(sA + x1)), v_scale));
                     #endif
 
-                        for( ; x1 < bcols; x1+=1 )
+                        for( ; x1 < bcols; x1++ )
                             A[x1] = (ushort)(sA[x1] & (INTER_TAB_SIZE2-1));
                     }
                     else if( planar_input )
@@ -4433,7 +4433,7 @@ public:
                         }
                     #endif
 
-                        for( ; x1 < bcols; x1+=1 )
+                        for( ; x1 < bcols; x1++ )
                         {
                             int sx = cvRound(sX[x1]*INTER_TAB_SIZE);
                             int sy = cvRound(sY[x1]*INTER_TAB_SIZE);
@@ -4467,7 +4467,7 @@ public:
                         }
                     #endif
 
-                        for( x1 = 0; x1 < bcols; x1+=1 )
+                        for( x1 = 0; x1 < bcols; x1++ )
                         {
                             int sx = cvRound(sXY[x1*2]*INTER_TAB_SIZE);
                             int sy = cvRound(sXY[x1*2+1]*INTER_TAB_SIZE);
@@ -4850,7 +4850,7 @@ void cv::convertMaps( InputArray _map1, InputArray _map2,
 
     const float scale = 1.f/INTER_TAB_SIZE;
     int x, y;
-    for( y = 0; y < size.height; y+=1 )
+    for( y = 0; y < size.height; y++ )
     {
         const float* src1f = m1->ptr<float>(y);
         const float* src2f = m2->ptr<float>(y);
@@ -4902,7 +4902,7 @@ void cv::convertMaps( InputArray _map1, InputArray _map2,
                     }
                 }
                 #endif
-                for( ; x < size.width; x+=1 )
+                for( ; x < size.width; x++ )
                 {
                     dst1[x*2] = saturate_cast<short>(src1f[x]);
                     dst1[x*2+1] = saturate_cast<short>(src2f[x]);
@@ -4982,7 +4982,7 @@ void cv::convertMaps( InputArray _map1, InputArray _map2,
                     }
                 }
                 #endif
-                for( ; x < size.width; x+=1 )
+                for( ; x < size.width; x++ )
                 {
                     int ix = saturate_cast<int>(src1f[x]*INTER_TAB_SIZE);
                     int iy = saturate_cast<int>(src2f[x]*INTER_TAB_SIZE);
@@ -5007,7 +5007,7 @@ void cv::convertMaps( InputArray _map1, InputArray _map2,
                                                                             _mm_cvtps_epi32(_mm_loadu_ps(src1f + x + 4))));
                 }
                 #endif
-                for( ; x < size.width; x+=1 )
+                for( ; x < size.width; x++ )
                 {
                     dst1[x*2] = saturate_cast<short>(src1f[x*2]);
                     dst1[x*2+1] = saturate_cast<short>(src1f[x*2+1]);
@@ -5066,7 +5066,7 @@ void cv::convertMaps( InputArray _map1, InputArray _map2,
                     }
                 }
                 #endif
-                for( ; x < size.width; x+=1 )
+                for( ; x < size.width; x++ )
                 {
                     int ix = saturate_cast<int>(src1f[x*2]*INTER_TAB_SIZE);
                     int iy = saturate_cast<int>(src1f[x*2+1]*INTER_TAB_SIZE);
@@ -5149,7 +5149,7 @@ void cv::convertMaps( InputArray _map1, InputArray _map2,
                                                          _mm_mul_ps(v_scale, _mm_cvtepi32_ps(_mm_srli_epi32(v_fxy_p, INTER_BITS)))));
             }
             #endif
-            for( ; x < size.width; x+=1 )
+            for( ; x < size.width; x++ )
             {
                 int fxy = src2 ? src2[x] & (INTER_TAB_SIZE2-1) : 0;
                 dst1f[x] = src1[x*2] + (fxy & (INTER_TAB_SIZE-1))*scale;
@@ -5211,7 +5211,7 @@ void cv::convertMaps( InputArray _map1, InputArray _map2,
                 }
             }
             #endif
-            for( ; x < size.width; x+=1 )
+            for( ; x < size.width; x++ )
             {
                 int fxy = src2 ? src2[x] & (INTER_TAB_SIZE2-1): 0;
                 dst1f[x*2] = src1[x*2] + (fxy & (INTER_TAB_SIZE-1))*scale;
@@ -5267,7 +5267,7 @@ public:
                 Mat _XY(bh, bw, CV_16SC2, XY), matA;
                 Mat dpart(dst, Rect(x, y, bw, bh));
 
-                for( y1 = 0; y1 < bh; y1+=1 )
+                for( y1 = 0; y1 < bh; y1++ )
                 {
                     short* xy = XY + y1*bw*2;
                     int X0 = saturate_cast<int>((M[1]*(y + y1) + M[2])*AB_SCALE) + round_delta;
@@ -5314,7 +5314,7 @@ public:
                             }
                         }
                         #endif
-                        for( ; x1 < bw; x1+=1 )
+                        for( ; x1 < bw; x1++ )
                         {
                             int X = (X0 + adelta[x+x1]) >> AB_BITS;
                             int Y = (Y0 + bdelta[x+x1]) >> AB_BITS;
@@ -5381,7 +5381,7 @@ public:
                             vst1q_s16(alpha + x1, vcombine_s16(v_alpha0, v_alpha1));
                         }
                     #endif
-                        for( ; x1 < bw; x1+=1 )
+                        for( ; x1 < bw; x1++ )
                         {
                             int X = (X0 + adelta[x+x1]) >> (AB_BITS - INTER_BITS);
                             int Y = (Y0 + bdelta[x+x1]) >> (AB_BITS - INTER_BITS);
@@ -5665,8 +5665,8 @@ void cv::warpAffine( InputArray _src, OutputArray _dst,
             CV_Assert(mode && ippFunc);
 
             double coeffs[2][3];
-            for( int i = 0; i < 2; i+=1 )
-                for( int j = 0; j < 3; j+=1 )
+            for( int i = 0; i < 2; i++ )
+                for( int j = 0; j < 3; j++ )
                     coeffs[i][j] = matM.at<double>(i, j);
 
             bool ok;
@@ -5683,7 +5683,7 @@ void cv::warpAffine( InputArray _src, OutputArray _dst,
     }
 #endif
 
-    for( x = 0; x < dst.cols; x+=1 )
+    for( x = 0; x < dst.cols; x++ )
     {
         adelta[x] = saturate_cast<int>(M[0]*x*AB_SCALE);
         bdelta[x] = saturate_cast<int>(M[3]*x*AB_SCALE);
@@ -5744,7 +5744,7 @@ public:
                 Mat _XY(bh, bw, CV_16SC2, XY), matA;
                 Mat dpart(dst, Rect(x, y, bw, bh));
 
-                for( y1 = 0; y1 < bh; y1+=1 )
+                for( y1 = 0; y1 < bh; y1++ )
                 {
                     short* xy = XY + y1*bw*2;
                     double X0 = M[0]*x + M[1]*(y + y1) + M[2];
@@ -5865,7 +5865,7 @@ public:
                         }
                         #endif
 
-                        for( ; x1 < bw; x1+=1 )
+                        for( ; x1 < bw; x1++ )
                         {
                             double W = W0 + M[6]*x1;
                             W = W ? 1./W : 0;
@@ -6006,7 +6006,7 @@ public:
                         }
                         #endif
 
-                        for( ; x1 < bw; x1+=1 )
+                        for( ; x1 < bw; x1++ )
                         {
                             double W = W0 + M[6]*x1;
                             W = W ? INTER_TAB_SIZE/W : 0;
@@ -6169,8 +6169,8 @@ void cv::warpPerspective( InputArray _src, OutputArray _dst, InputArray _M0,
             CV_Assert(mode && ippFunc);
 
             double coeffs[3][3];
-            for( int i = 0; i < 3; i+=1 )
-                for( int j = 0; j < 3; j+=1 )
+            for( int i = 0; i < 3; i++ )
+                for( int j = 0; j < 3; j++ )
                     coeffs[i][j] = matM.at<double>(i, j);
 
             bool ok;
@@ -6245,7 +6245,7 @@ cv::Mat cv::getPerspectiveTransform( const Point2f src[], const Point2f dst[] )
     double a[8][8], b[8];
     Mat A(8, 8, CV_64F, a), B(8, 1, CV_64F, b);
 
-    for( int i = 0; i < 4; +=1i )
+    for( int i = 0; i < 4; ++i )
     {
         a[i][0] = a[i+4][3] = src[i].x;
         a[i][1] = a[i+4][4] = src[i].y;
@@ -6291,7 +6291,7 @@ cv::Mat cv::getAffineTransform( const Point2f src[], const Point2f dst[] )
     double a[6*6], b[6];
     Mat A(6, 6, CV_64F, a), B(6, 1, CV_64F, b);
 
-    for( int i = 0; i < 3; i+=1 )
+    for( int i = 0; i < 3; i++ )
     {
         int j = i*12;
         int k = i*12+6;
@@ -6502,17 +6502,17 @@ cvLogPolar( const CvArr* srcarr, CvArr* dstarr,
         cv::AutoBuffer<double> _exp_tab(dsize.width);
         double* exp_tab = _exp_tab;
 
-        for( rho = 0; rho < dst->width; rho+=1 )
+        for( rho = 0; rho < dst->width; rho++ )
             exp_tab[rho] = std::exp(rho/M) - 1.0;
 
-        for( phi = 0; phi < dsize.height; phi+=1 )
+        for( phi = 0; phi < dsize.height; phi++ )
         {
             double cp = cos(phi*2*CV_PI/dsize.height);
             double sp = sin(phi*2*CV_PI/dsize.height);
             float* mx = (float*)(mapx->data.ptr + phi*mapx->step);
             float* my = (float*)(mapy->data.ptr + phi*mapy->step);
 
-            for( rho = 0; rho < dsize.width; rho+=1 )
+            for( rho = 0; rho < dsize.width; rho++ )
             {
                 double r = exp_tab[rho];
                 double x = r*cp + center.x;
@@ -6543,26 +6543,26 @@ cvLogPolar( const CvArr* srcarr, CvArr* dstarr,
         bufp = cvMat( 1, dsize.width, CV_32F, buf + dsize.width*2 );
         bufa = cvMat( 1, dsize.width, CV_32F, buf + dsize.width*3 );
 
-        for( x = 0; x < dsize.width; x+=1 )
+        for( x = 0; x < dsize.width; x++ )
             bufx.data.fl[x] = (float)x - center.x;
 
-        for( y = 0; y < dsize.height; y+=1 )
+        for( y = 0; y < dsize.height; y++ )
         {
             float* mx = (float*)(mapx->data.ptr + y*mapx->step);
             float* my = (float*)(mapy->data.ptr + y*mapy->step);
 
-            for( x = 0; x < dsize.width; x+=1 )
+            for( x = 0; x < dsize.width; x++ )
                 bufy.data.fl[x] = (float)y - center.y;
 
 #if 1
             cvCartToPolar( &bufx, &bufy, &bufp, &bufa );
 
-            for( x = 0; x < dsize.width; x+=1 )
+            for( x = 0; x < dsize.width; x++ )
                 bufp.data.fl[x] += 1.f;
 
             cvLog( &bufp, &bufp );
 
-            for( x = 0; x < dsize.width; x+=1 )
+            for( x = 0; x < dsize.width; x++ )
             {
                 double rho = bufp.data.fl[x]*M;
                 double phi = bufa.data.fl[x]*ascale;
@@ -6571,7 +6571,7 @@ cvLogPolar( const CvArr* srcarr, CvArr* dstarr,
                 my[x] = (float)phi + ANGLE_BORDER;
             }
 #else
-            for( x = 0; x < dsize.width; x+=1 )
+            for( x = 0; x < dsize.width; x++ )
             {
                 double xx = bufx.data.fl[x];
                 double yy = bufy.data.fl[x];
@@ -6632,14 +6632,14 @@ void cvLinearPolar( const CvArr* srcarr, CvArr* dstarr,
     {
         int phi, rho;
 
-        for( phi = 0; phi < dsize.height; phi+=1 )
+        for( phi = 0; phi < dsize.height; phi++ )
         {
             double cp = cos(phi*2*CV_PI/dsize.height);
             double sp = sin(phi*2*CV_PI/dsize.height);
             float* mx = (float*)(mapx->data.ptr + phi*mapx->step);
             float* my = (float*)(mapy->data.ptr + phi*mapy->step);
 
-            for( rho = 0; rho < dsize.width; rho+=1 )
+            for( rho = 0; rho < dsize.width; rho++ )
             {
                 double r = maxRadius*rho/dsize.width;
                 double x = r*cp + center.x;
@@ -6672,20 +6672,20 @@ void cvLinearPolar( const CvArr* srcarr, CvArr* dstarr,
         bufp = cvMat( 1, dsize.width, CV_32F, buf + dsize.width*2 );
         bufa = cvMat( 1, dsize.width, CV_32F, buf + dsize.width*3 );
 
-        for( x = 0; x < dsize.width; x+=1 )
+        for( x = 0; x < dsize.width; x++ )
             bufx.data.fl[x] = (float)x - center.x;
 
-        for( y = 0; y < dsize.height; y+=1 )
+        for( y = 0; y < dsize.height; y++ )
         {
             float* mx = (float*)(mapx->data.ptr + y*mapx->step);
             float* my = (float*)(mapy->data.ptr + y*mapy->step);
 
-            for( x = 0; x < dsize.width; x+=1 )
+            for( x = 0; x < dsize.width; x++ )
                 bufy.data.fl[x] = (float)y - center.y;
 
             cvCartToPolar( &bufx, &bufy, &bufp, &bufa, 0 );
 
-            for( x = 0; x < dsize.width; x+=1 )
+            for( x = 0; x < dsize.width; x++ )
             {
                 double rho = bufp.data.fl[x]*pscale;
                 double phi = bufa.data.fl[x]*ascale;

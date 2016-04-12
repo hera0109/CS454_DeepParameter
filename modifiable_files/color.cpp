@@ -112,7 +112,7 @@ template<typename _Tp> static void splineBuild(const _Tp* f, int n, _Tp* tab)
     int i;
     tab[0] = tab[1] = (_Tp)0;
 
-    for(i = 1; i < n-1; i+=1)
+    for(i = 1; i < n-1; i++)
     {
         _Tp t = 3*(f[i+1] - 2*f[i] + f[i-1]);
         _Tp l = 1/(4 - tab[(i-1)*4]);
@@ -181,7 +181,7 @@ public:
         const uchar* yS = src.ptr<uchar>(range.start);
         uchar* yD = dst.ptr<uchar>(range.start);
 
-        for( int i = range.start; i < range.end; +=1i, yS += src.step, yD += dst.step )
+        for( int i = range.start; i < range.end; ++i, yS += src.step, yD += dst.step )
             cvt((const _Tp*)yS, (_Tp*)yD, src.cols);
     }
 
@@ -772,7 +772,7 @@ struct RGB5x52RGB
                 }
             }
             #endif
-            for( ; i < n; i+=1, dst += dcn )
+            for( ; i < n; i++, dst += dcn )
             {
                 unsigned t = ((const ushort*)src)[i];
                 dst[bidx] = (uchar)(t << 3);
@@ -813,7 +813,7 @@ struct RGB5x52RGB
                 }
             }
             #endif
-            for( ; i < n; i+=1, dst += dcn )
+            for( ; i < n; i++, dst += dcn )
             {
                 unsigned t = ((const ushort*)src)[i];
                 dst[bidx] = (uchar)(t << 3);
@@ -866,7 +866,7 @@ struct RGB2RGB5x5
                     vst1q_u16((ushort *)dst + i, v_dst);
                 }
                 #endif
-                for ( ; i < n; i+=1, src += 3 )
+                for ( ; i < n; i++, src += 3 )
                     ((ushort*)dst)[i] = (ushort)((src[bidx] >> 3)|((src[1]&~3) << 3)|((src[bidx^2]&~7) << 8));
             }
             else
@@ -881,7 +881,7 @@ struct RGB2RGB5x5
                     vst1q_u16((ushort *)dst + i, v_dst);
                 }
                 #endif
-                for ( ; i < n; i+=1, src += 4 )
+                for ( ; i < n; i++, src += 4 )
                     ((ushort*)dst)[i] = (ushort)((src[bidx] >> 3)|((src[1]&~3) << 3)|((src[bidx^2]&~7) << 8));
             }
         }
@@ -897,7 +897,7 @@ struct RGB2RGB5x5
                 vst1q_u16((ushort *)dst + i, v_dst);
             }
             #endif
-            for ( ; i < n; i+=1, src += 3 )
+            for ( ; i < n; i++, src += 3 )
                 ((ushort*)dst)[i] = (ushort)((src[bidx] >> 3)|((src[1]&~7) << 2)|((src[bidx^2]&~7) << 7));
         }
         else
@@ -913,7 +913,7 @@ struct RGB2RGB5x5
                 vst1q_u16((ushort *)dst + i, v_dst);
             }
             #endif
-            for ( ; i < n; i+=1, src += 4 )
+            for ( ; i < n; i++, src += 4 )
                 ((ushort*)dst)[i] = (ushort)((src[bidx] >> 3)|((src[1]&~7) << 2)|
                     ((src[bidx^2]&~7) << 7)|(src[3] ? 0x8000 : 0));
         }
@@ -937,14 +937,14 @@ struct Gray2RGB
     void operator()(const _Tp* src, _Tp* dst, int n) const
     {
         if( dstcn == 3 )
-            for( int i = 0; i < n; i+=1, dst += 3 )
+            for( int i = 0; i < n; i++, dst += 3 )
             {
                 dst[0] = dst[1] = dst[2] = src[i];
             }
         else
         {
             _Tp alpha = ColorChannel<_Tp>::max();
-            for( int i = 0; i < n; i+=1, dst += 4 )
+            for( int i = 0; i < n; i++, dst += 4 )
             {
                 dst[0] = dst[1] = dst[2] = src[i];
                 dst[3] = alpha;
@@ -1008,7 +1008,7 @@ struct Gray2RGB5x5
                 }
             }
             #endif
-            for ( ; i < n; i+=1 )
+            for ( ; i < n; i++ )
             {
                 int t = src[i];
                 ((ushort*)dst)[i] = (ushort)((t >> 3)|((t & ~3) << 3)|((t & ~7) << 8));
@@ -1044,7 +1044,7 @@ struct Gray2RGB5x5
                 }
             }
             #endif
-            for( ; i < n; i+=1 )
+            for( ; i < n; i++ )
             {
                 int t = src[i] >> 3;
                 ((ushort*)dst)[i] = (ushort)(t|(t << 5)|(t << 10));
@@ -1160,7 +1160,7 @@ struct RGB5x52Gray
                 }
             }
             #endif
-            for ( ; i < n; i+=1)
+            for ( ; i < n; i++)
             {
                 int t = ((ushort*)src)[i];
                 dst[i] = (uchar)CV_DESCALE(((t << 3) & 0xf8)*B2Y +
@@ -1224,7 +1224,7 @@ struct RGB5x52Gray
                 }
             }
             #endif
-            for ( ; i < n; i+=1)
+            for ( ; i < n; i++)
             {
                 int t = ((ushort*)src)[i];
                 dst[i] = (uchar)CV_DESCALE(((t << 3) & 0xf8)*B2Y +
@@ -1264,7 +1264,7 @@ template<typename _Tp> struct RGB2Gray
     {
         int scn = srccn;
         float cb = coeffs[0], cg = coeffs[1], cr = coeffs[2];
-        for(int i = 0; i < n; i+=1, src += scn)
+        for(int i = 0; i < n; i++, src += scn)
             dst[i] = saturate_cast<_Tp>(src[0]*cb + src[1]*cg + src[2]*cr);
     }
     int srccn;
@@ -1283,7 +1283,7 @@ template<> struct RGB2Gray<uchar>
         int b = 0, g = 0, r = (1 << (yuv_shift-1));
         int db = coeffs[blueIdx^2], dg = coeffs[1], dr = coeffs[blueIdx];
 
-        for( int i = 0; i < 256; i+=1, b += db, g += dg, r += dr )
+        for( int i = 0; i < 256; i++, b += db, g += dg, r += dr )
         {
             tab[i] = b;
             tab[i+256] = g;
@@ -1294,7 +1294,7 @@ template<> struct RGB2Gray<uchar>
     {
         int scn = srccn;
         const int* _tab = tab;
-        for(int i = 0; i < n; i+=1, src += scn)
+        for(int i = 0; i < n; i++, src += scn)
             dst[i] = (uchar)((_tab[src[0]] + _tab[src[1]+256] + _tab[src[2]+512]) >> yuv_shift);
     }
     int srccn;
@@ -1385,7 +1385,7 @@ struct RGB2Gray<ushort>
             vst1_u16(dst + i, vmovn_u32(vshrq_n_u32(vaddq_u32(v_dst, v_delta), yuv_shift)));
         }
 
-        for( ; i < n; i+=1, src += scn)
+        for( ; i < n; i++, src += scn)
             dst[i] = (ushort)CV_DESCALE((unsigned)(src[0]*cb + src[1]*cg + src[2]*cr), yuv_shift);
     }
 
@@ -1451,7 +1451,7 @@ struct RGB2Gray<float>
             }
         }
 
-        for ( ; i < n; i+=1, src += scn)
+        for ( ; i < n; i++, src += scn)
             dst[i] = src[0]*cb + src[1]*cg + src[2]*cr;
     }
 
@@ -1566,7 +1566,7 @@ struct RGB2Gray<ushort>
             }
         }
 
-        for( ; i < n; i+=1, src += scn)
+        for( ; i < n; i++, src += scn)
             dst[i] = (ushort)CV_DESCALE((unsigned)(src[0]*cb + src[1]*cg + src[2]*cr), yuv_shift);
     }
 
@@ -1663,7 +1663,7 @@ struct RGB2Gray<float>
             }
         }
 
-        for ( ; i < n; i+=1, src += scn)
+        for ( ; i < n; i++, src += scn)
             dst[i] = src[0]*cb + src[1]*cg + src[2]*cr;
     }
 
@@ -1692,7 +1692,7 @@ template<> struct RGB2Gray<ushort>
     void operator()(const ushort* src, ushort* dst, int n) const
     {
         int scn = srccn, cb = coeffs[0], cg = coeffs[1], cr = coeffs[2];
-        for(int i = 0; i < n; i+=1, src += scn)
+        for(int i = 0; i < n; i++, src += scn)
             dst[i] = (ushort)CV_DESCALE((unsigned)(src[0]*cb + src[1]*cg + src[2]*cr), yuv_shift);
     }
     int srccn;
@@ -3361,7 +3361,7 @@ template<typename _Tp> struct RGB2XYZ_i
             871,     2929,    296,
             79,      488,     3892
         };
-        for( int i = 0; i < 9; i+=1 )
+        for( int i = 0; i < 9; i++ )
             coeffs[i] = _coeffs ? cvRound(_coeffs[i]*(1 << xyz_shift)) : coeffs0[i];
         if(blueIdx == 0)
         {
@@ -3406,7 +3406,7 @@ struct RGB2XYZ_i<uchar>
             871,     2929,    296,
             79,      488,     3892
         };
-        for( int i = 0; i < 9; i+=1 )
+        for( int i = 0; i < 9; i++ )
             coeffs[i] = _coeffs ? cvRound(_coeffs[i]*(1 << xyz_shift)) : coeffs0[i];
         if(blueIdx == 0)
         {
@@ -3512,7 +3512,7 @@ struct RGB2XYZ_i<ushort>
             871,     2929,    296,
             79,      488,     3892
         };
-        for( int i = 0; i < 9; i+=1 )
+        for( int i = 0; i < 9; i++ )
             coeffs[i] = _coeffs ? cvRound(_coeffs[i]*(1 << xyz_shift)) : coeffs0[i];
         if(blueIdx == 0)
         {
@@ -3809,7 +3809,7 @@ template<typename _Tp> struct XYZ2RGB_i
             -3970,   7684,    170,
               228,   -836,   4331
         };
-        for(int i = 0; i < 9; i+=1)
+        for(int i = 0; i < 9; i++)
             coeffs[i] = _coeffs ? cvRound(_coeffs[i]*(1 << xyz_shift)) : coeffs0[i];
 
         if(blueIdx == 0)
@@ -3858,7 +3858,7 @@ struct XYZ2RGB_i<uchar>
             -3970,   7684,    170,
               228,   -836,   4331
         };
-        for(int i = 0; i < 9; i+=1)
+        for(int i = 0; i < 9; i++)
             coeffs[i] = _coeffs ? cvRound(_coeffs[i]*(1 << xyz_shift)) : coeffs0[i];
 
         if(blueIdx == 0)
@@ -3976,7 +3976,7 @@ struct XYZ2RGB_i<ushort>
             -3970,   7684,    170,
               228,   -836,   4331
         };
-        for(int i = 0; i < 9; i+=1)
+        for(int i = 0; i < 9; i++)
             coeffs[i] = _coeffs ? cvRound(_coeffs[i]*(1 << xyz_shift)) : coeffs0[i];
 
         if(blueIdx == 0)
@@ -4145,7 +4145,7 @@ struct RGB2HSV_b
         if( !initialized )
         {
             sdiv_table[0] = hdiv_table180[0] = hdiv_table256[0] = 0;
-            for( i = 1; i < 256; i+=1 )
+            for( i = 1; i < 256; i++ )
             {
                 sdiv_table[i] = saturate_cast<int>((255 << hsv_shift)/(1.*i));
                 hdiv_table180[i] = saturate_cast<int>((180 << hsv_shift)/(6.*i));
@@ -5035,7 +5035,7 @@ static void initLabTabs()
     {
         float f[LAB_CBRT_TAB_SIZE+1], g[GAMMA_TAB_SIZE+1], ig[GAMMA_TAB_SIZE+1], scale = 1.f/LabCbrtTabScale;
         int i;
-        for(i = 0; i <= LAB_CBRT_TAB_SIZE; i+=1)
+        for(i = 0; i <= LAB_CBRT_TAB_SIZE; i++)
         {
             float x = i*scale;
             f[i] = x < 0.008856f ? x*7.787f + 0.13793103448275862f : cvCbrt(x);
@@ -5043,7 +5043,7 @@ static void initLabTabs()
         splineBuild(f, LAB_CBRT_TAB_SIZE, LabCbrtTab);
 
         scale = 1.f/GammaTabScale;
-        for(i = 0; i <= GAMMA_TAB_SIZE; i+=1)
+        for(i = 0; i <= GAMMA_TAB_SIZE; i++)
         {
             float x = i*scale;
             g[i] = x <= 0.04045f ? x*(1.f/12.92f) : (float)std::pow((double)(x + 0.055)*(1./1.055), 2.4);
@@ -5052,14 +5052,14 @@ static void initLabTabs()
         splineBuild(g, GAMMA_TAB_SIZE, sRGBGammaTab);
         splineBuild(ig, GAMMA_TAB_SIZE, sRGBInvGammaTab);
 
-        for(i = 0; i < 256; i+=1)
+        for(i = 0; i < 256; i++)
         {
             float x = i*(1.f/255.f);
             sRGBGammaTab_b[i] = saturate_cast<ushort>(255.f*(1 << gamma_shift)*(x <= 0.04045f ? x*(1.f/12.92f) : (float)std::pow((double)(x + 0.055)*(1./1.055), 2.4)));
             linearGammaTab_b[i] = (ushort)(i*(1 << gamma_shift));
         }
 
-        for(i = 0; i < LAB_CBRT_TAB_SIZE_B; i+=1)
+        for(i = 0; i < LAB_CBRT_TAB_SIZE_B; i++)
         {
             float x = i*(1.f/(255.f*(1 << gamma_shift)));
             LabCbrtTab_b[i] = saturate_cast<ushort>((1 << lab_shift2)*(x < 0.008856f ? x*7.787f + 0.13793103448275862f : cvCbrt(x)));
@@ -5091,7 +5091,7 @@ struct RGB2Lab_b
             (1 << lab_shift)/_whitept[2]
         };
 
-        for( int i = 0; i < _3; i+=1 )
+        for( int i = 0; i < _3; i++ )
         {
             coeffs[i*3+(blueIdx^2)] = cvRound(_coeffs[i*3]*scale[i]);
             coeffs[i*3+1] = cvRound(_coeffs[i*3+1]*scale[i]);
@@ -5157,7 +5157,7 @@ struct RGB2Lab_f
 
         float scale[] = { 1.0f / _whitept[0], 1.0f, 1.0f / _whitept[2] };
 
-        for( int i = 0; i < _3; i+=1 )
+        for( int i = 0; i < _3; i++ )
         {
             int j = i * 3;
             coeffs[j + (blueIdx ^ 2)] = _coeffs[j] * scale[i];
@@ -5231,7 +5231,7 @@ struct Lab2RGB_f
         if(!_whitept)
             _whitept = D65;
 
-        for( int i = 0; i < 3; i+=1 )
+        for( int i = 0; i < 3; i++ )
         {
             coeffs[i+(blueIdx^2)*3] = _coeffs[i]*_whitept[i];
             coeffs[i+3] = _coeffs[i+3]*_whitept[i];
@@ -5272,7 +5272,7 @@ struct Lab2RGB_f
 
             float fxz[] = { ai / 500.0f + fy, fy - bi / 200.0f };
 
-            for (int j = 0; j < 2; j+=1)
+            for (int j = 0; j < 2; j++)
                 if (fxz[j] <= fThresh)
                     fxz[j] = (fxz[j] - 16.0f / 116.0f) / 7.787f;
                 else
@@ -5531,7 +5531,7 @@ struct RGB2Luv_f
         if(!_coeffs) _coeffs = sRGB2XYZ_D65;
         if(!whitept) whitept = D65;
 
-        for( i = 0; i < 3; i+=1 )
+        for( i = 0; i < 3; i++ )
         {
             coeffs[i*3] = _coeffs[i*3];
             coeffs[i*3+1] = _coeffs[i*3+1];
@@ -5604,7 +5604,7 @@ struct Luv2RGB_f
         if(!_coeffs) _coeffs = XYZ2sRGB_D65;
         if(!whitept) whitept = D65;
 
-        for( int i = 0; i < 3; i+=1 )
+        for( int i = 0; i < 3; i++ )
         {
             coeffs[i+(blueIdx^2)*3] = _coeffs[i];
             coeffs[i+3] = _coeffs[i+3];
@@ -6270,11 +6270,11 @@ struct YUV420p2RGB888Invoker : ParallelLoopBody
 
         if(range.start % 2 == 1)
         {
-            u1 += uvsteps[(usIdx+=1) & 1];
-            v1 += uvsteps[(vsIdx+=1) & 1];
+            u1 += uvsteps[(usIdx++) & 1];
+            v1 += uvsteps[(vsIdx++) & 1];
         }
 
-        for (int j = rangeBegin; j < rangeEnd; j += 2, y1 += stride * 2, u1 += uvsteps[(usIdx+=1) & 1], v1 += uvsteps[(vsIdx+=1) & 1])
+        for (int j = rangeBegin; j < rangeEnd; j += 2, y1 += stride * 2, u1 += uvsteps[(usIdx++) & 1], v1 += uvsteps[(vsIdx++) & 1])
         {
             uchar* row1 = dst->ptr<uchar>(j);
             uchar* row2 = dst->ptr<uchar>(j + 1);
@@ -6338,11 +6338,11 @@ struct YUV420p2RGBA8888Invoker : ParallelLoopBody
 
         if(range.start % 2 == 1)
         {
-            u1 += uvsteps[(usIdx+=1) & 1];
-            v1 += uvsteps[(vsIdx+=1) & 1];
+            u1 += uvsteps[(usIdx++) & 1];
+            v1 += uvsteps[(vsIdx++) & 1];
         }
 
-        for (int j = rangeBegin; j < rangeEnd; j += 2, y1 += stride * 2, u1 += uvsteps[(usIdx+=1) & 1], v1 += uvsteps[(vsIdx+=1) & 1])
+        for (int j = rangeBegin; j < rangeEnd; j += 2, y1 += stride * 2, u1 += uvsteps[(usIdx++) & 1], v1 += uvsteps[(vsIdx++) & 1])
         {
             uchar* row1 = dst->ptr<uchar>(j);
             uchar* row2 = dst->ptr<uchar>(j + 1);
@@ -6443,7 +6443,7 @@ struct RGB888toYUV420pInvoker: public ParallelLoopBody
         const int h = src_.rows;
 
         const int cn = src_.channels();
-        for( int i = rowRange.start; i < rowRange.end; i+=1 )
+        for( int i = rowRange.start; i < rowRange.end; i++ )
         {
             const uchar* row0 = src_.ptr<uchar>(2 * i);
             const uchar* row1 = src_.ptr<uchar>(2 * i + 1);
@@ -6453,7 +6453,7 @@ struct RGB888toYUV420pInvoker: public ParallelLoopBody
             uchar* v = dst_->ptr<uchar>(h + (i + h/2)/2) + ((i + h/2) % 2) * (w/2);
             if( uIdx_ == 2 ) std::swap(u, v);
 
-            for( int j = 0, k = 0; j < w * cn; j += 2 * cn, k+=1 )
+            for( int j = 0, k = 0; j < w * cn; j += 2 * cn, k++ )
             {
                 int r00 = row0[2-bIdx + j];      int g00 = row0[1 + j];      int b00 = row0[bIdx + j];
                 int r01 = row0[2-bIdx + cn + j]; int g01 = row0[1 + cn + j]; int b01 = row0[bIdx + cn + j];
@@ -6526,7 +6526,7 @@ struct YUV422toRGB888Invoker : ParallelLoopBody
         const int vidx = (2 + uidx) % 4;
         const uchar* yuv_src = src + rangeBegin * stride;
 
-        for (int j = rangeBegin; j < rangeEnd; j+=1, yuv_src += stride)
+        for (int j = rangeBegin; j < rangeEnd; j++, yuv_src += stride)
         {
             uchar* row = dst->ptr<uchar>(j);
 
@@ -6572,7 +6572,7 @@ struct YUV422toRGBA8888Invoker : ParallelLoopBody
         const int vidx = (2 + uidx) % 4;
         const uchar* yuv_src = src + rangeBegin * stride;
 
-        for (int j = rangeBegin; j < rangeEnd; j+=1, yuv_src += stride)
+        for (int j = rangeBegin; j < rangeEnd; j++, yuv_src += stride)
         {
             uchar* row = dst->ptr<uchar>(j);
 
@@ -6634,17 +6634,17 @@ struct RGBA2mRGBA
     {
         _Tp max_val  = ColorChannel<_Tp>::max();
         _Tp half_val = ColorChannel<_Tp>::half();
-        for( int i = 0; i < n; i+=1 )
+        for( int i = 0; i < n; i++ )
         {
-            _Tp v0 = *src+=1;
-            _Tp v1 = *src+=1;
-            _Tp v2 = *src+=1;
-            _Tp v3 = *src+=1;
+            _Tp v0 = *src++;
+            _Tp v1 = *src++;
+            _Tp v2 = *src++;
+            _Tp v3 = *src++;
 
-            *dst+=1 = (v0 * v3 + half_val) / max_val;
-            *dst+=1 = (v1 * v3 + half_val) / max_val;
-            *dst+=1 = (v2 * v3 + half_val) / max_val;
-            *dst+=1 = v3;
+            *dst++ = (v0 * v3 + half_val) / max_val;
+            *dst++ = (v1 * v3 + half_val) / max_val;
+            *dst++ = (v2 * v3 + half_val) / max_val;
+            *dst++ = v3;
         }
     }
 };
@@ -6658,18 +6658,18 @@ struct mRGBA2RGBA
     void operator()(const _Tp* src, _Tp* dst, int n) const
     {
         _Tp max_val = ColorChannel<_Tp>::max();
-        for( int i = 0; i < n; i+=1 )
+        for( int i = 0; i < n; i++ )
         {
-            _Tp v0 = *src+=1;
-            _Tp v1 = *src+=1;
-            _Tp v2 = *src+=1;
-            _Tp v3 = *src+=1;
+            _Tp v0 = *src++;
+            _Tp v1 = *src++;
+            _Tp v2 = *src++;
+            _Tp v3 = *src++;
             _Tp v3_half = v3 / 2;
 
-            *dst+=1 = (v3==0)? 0 : (v0 * max_val + v3_half) / v3;
-            *dst+=1 = (v3==0)? 0 : (v1 * max_val + v3_half) / v3;
-            *dst+=1 = (v3==0)? 0 : (v2 * max_val + v3_half) / v3;
-            *dst+=1 = v3;
+            *dst++ = (v3==0)? 0 : (v0 * max_val + v3_half) / v3;
+            *dst++ = (v3==0)? 0 : (v1 * max_val + v3_half) / v3;
+            *dst++ = (v3==0)? 0 : (v2 * max_val + v3_half) / v3;
+            *dst++ = v3;
         }
     }
 };
@@ -7051,13 +7051,13 @@ static bool ocl_cvtColor( InputArray _src, OutputArray _dst, int code, int dcn )
                 int v = 255 << hsv_shift;
                 if (!initialized180 && !initialized256)
                 {
-                    for(int i = 1; i < 256; i+=1 )
+                    for(int i = 1; i < 256; i++ )
                         sdiv_table[i] = saturate_cast<int>(v/(1.*i));
                     Mat(1, 256, CV_32SC1, sdiv_table).copyTo(sdiv_data);
                 }
 
                 v = hrange << hsv_shift;
-                for (int i = 1; i < 256; i+=1 )
+                for (int i = 1; i < 256; i++ )
                     hdiv_table[i] = saturate_cast<int>(v/(6.*i));
 
                 Mat(1, 256, CV_32SC1, hdiv_table).copyTo(hdiv_data);
@@ -7160,7 +7160,7 @@ static bool ocl_cvtColor( InputArray _src, OutputArray _dst, int code, int dcn )
                     (1 << lab_shift)/_whitept[2]
                 };
 
-                for (int i = 0; i < 3; i+=1 )
+                for (int i = 0; i < 3; i++ )
                 {
                     coeffs[i*3+(bidx^2)] = cvRound(_coeffs[i*3]*scale[i]);
                     coeffs[i*3+1] = cvRound(_coeffs[i*3+1]*scale[i]);
@@ -7194,7 +7194,7 @@ static bool ocl_cvtColor( InputArray _src, OutputArray _dst, int code, int dcn )
                 const float * const _coeffs = sRGB2XYZ_D65, * const _whitept = D65;
                 float scale[] = { 1.0f / _whitept[0], 1.0f, 1.0f / _whitept[2] };
 
-                for (int i = 0; i < 3; i+=1)
+                for (int i = 0; i < 3; i++)
                 {
                     int j = i * 3;
                     coeffs[j + (bidx ^ 2)] = _coeffs[j] * (lab ? scale[i] : 1);
@@ -7265,7 +7265,7 @@ static bool ocl_cvtColor( InputArray _src, OutputArray _dst, int code, int dcn )
             float coeffs[9];
             const float * const _coeffs = XYZ2sRGB_D65, * const _whitept = D65;
 
-            for( int i = 0; i < 3; i+=1 )
+            for( int i = 0; i < 3; i++ )
             {
                 coeffs[i+(bidx^2)*3] = _coeffs[i] * (lab ? _whitept[i] : 1);
                 coeffs[i+3] = _coeffs[i+3] * (lab ? _whitept[i] : 1);
