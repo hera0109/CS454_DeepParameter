@@ -1,0 +1,42 @@
+#!/bin/bash
+
+input_file=$1
+output_file=$2
+define_file=$3
+
+new_input_file=$(mktemp /tmp/XXXX)
+cat $input_file | perl -pe "s/\+\+(?!([a-zA-Z0-9]|_))/+=1/g" >$new_input_file 
+
+grep_file=$(mktemp /tmp/XXXX)
+grep -noP '(?<=(=|>|<|\+|-|/|\*|\[|,|\(|\s))[0-9]+(?!([a-zA-Z0-9]|\.))' $new_input_file >$grep_file
+
+better_grep_file=$(mktemp /tmp/XXXX)
+cat $grep_file | awk -F ":" 'BEGIN{OFS=":"}{num_per_line[$1]++; print $0,num_per_line[$1]}' >$better_grep_file
+
+
+temp_file=$(mktemp /tmp/XXXX)
+cp $new_input_file $output_file
+cat $better_grep_file|  sort -t : -k1,1rn -k3,3rn >bla.dat
+cat $better_grep_file|  sort -t : -k1,1rn -k3,3rn | while read line; do
+  line_no=$(echo $line | cut -d : -f 1)
+  occurance=$(echo $line | cut -d : -f 3)
+  original_value=$(echo $line | cut -d : -f 2)
+
+  macro_name="INTEGER_"$line_no"_"$occurance"_"$original_value
+  
+  #Yes, I'm aware this is very inefficient but you should only need to run this script a few times. Send any complaints to /dev/null 
+  i=1
+  while read x; do
+    if [ "$i" == "$line_no" ]; then
+	./replace_integer.pl $occurance "$macro_name" "$x" >>$temp_file      
+    else
+      echo $x >>$temp_file
+    fi
+    i=$(( $i + 1 ))
+  done <$output_file
+
+  echo "#define "$macro_name" "$original_value >>$define_file
+
+  cp $temp_file $output_file
+  >$temp_file
+done
