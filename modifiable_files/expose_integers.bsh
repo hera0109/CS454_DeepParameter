@@ -1,28 +1,40 @@
 #!/bin/bash
+#This script "exposes" all the integer constants in a C++ file as define macros
 
-input_file=$1
-output_file=$2
-define_file=$3
+if [ "$#" -ne 3 ]; then
+  echo "ERROR: this script requires three arguments"
+  echo "Usage : ./expose_integers.bsh cpp_input_file cpp_output_file define_file" 
+  exit 1
+fi
 
+
+input_file=$1 #The input C++ file
+output_file=$2 #The output file (like the C++ but with the integer constants replaced with C++ define macros)
+define_file=$3 #The file which shall store the define macro definitions (always appended to)
+
+filename=$(echo $(basename $input_file) | rev | cut -d . -f 2- | rev)
+
+#Replace instances of '[variable]++' with '[variable]+=1' (exposes addition, "hidden" constant)
 new_input_file=$(mktemp /tmp/XXXX)
 cat $input_file | perl -pe "s/\+\+(?!([a-zA-Z0-9]|_))/+=1/g" >$new_input_file 
 
+#Highlight all the instances of integer constants 
 grep_file=$(mktemp /tmp/XXXX)
-grep -noP '(?<=(=|>|<|\+|-|/|\*|\[|,|\(|\s))[0-9]+(?!([a-zA-Z0-9]|\.))' $new_input_file >$grep_file
+grep -noP '(?<=(=|>|<|\+|-|/|\*|\[|,|\(|\s))(?<!(e-))[0-9]+(?!([a-zA-Z0-9]|\.))' $new_input_file >$grep_file
 
 better_grep_file=$(mktemp /tmp/XXXX)
 cat $grep_file | awk -F ":" 'BEGIN{OFS=":"}{num_per_line[$1]++; print $0,num_per_line[$1]}' >$better_grep_file
 
 
+#Knowing which lines contain constants and how many per line, we can systematically go through and replace these with define MACROS
 temp_file=$(mktemp /tmp/XXXX)
 cp $new_input_file $output_file
-cat $better_grep_file|  sort -t : -k1,1rn -k3,3rn >bla.dat
 cat $better_grep_file|  sort -t : -k1,1rn -k3,3rn | while read line; do
   line_no=$(echo $line | cut -d : -f 1)
   occurance=$(echo $line | cut -d : -f 3)
   original_value=$(echo $line | cut -d : -f 2)
 
-  macro_name="INTEGER_"$line_no"_"$occurance"_"$original_value
+  macro_name=$filename"_INTEGER_"$line_no"_"$occurance"_"$original_value
   
   #Yes, I'm aware this is very inefficient but you should only need to run this script a few times. Send any complaints to /dev/null 
   i=1
@@ -30,7 +42,7 @@ cat $better_grep_file|  sort -t : -k1,1rn -k3,3rn | while read line; do
     if [ "$i" == "$line_no" ]; then
 	./replace_integer.pl $occurance "$macro_name" "$x" >>$temp_file      
     else
-      echo $x >>$temp_file
+      echo "$x" >>$temp_file
     fi
     i=$(( $i + 1 ))
   done <$output_file

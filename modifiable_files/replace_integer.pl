@@ -2,6 +2,9 @@
 use strict;
 use warnings;
 
+# This perl script is used by 'expose_integers.bsh' to replace parameters. Of little use by itself
+# Perl has to be used as it has a special form of regex which permits backwards and fowards references (not used in sed, the logical alternative)
+
 my $num_args = $#ARGV +1;
 if($num_args != 3) {
 	print "\nUsage: replace_integer.pl occurance replacement to_replace";
@@ -22,7 +25,7 @@ sub replacen {
 sub replace_quoted {
         my ($string, $index,$replacement) = @_;
         $cont = 0; # initialize match counter
-        $string =~ s/((?<=(=|>|<|\+|-|\/|\*|\[|,|\(|\s))[0-9]+(?!([a-zA-Z][0-9]|\.)))/replacen($index,$1,$replacement)/eg;
+        $string =~ s/((?<=(=|>|<|\+|-|\/|\*|\[|,|\(|\s))(?<!(e-))[0-9]+(?!([a-zA-Z0-9]|\.)))/replacen($index,$1,$replacement)/eg;
         return $string;
 }
 
