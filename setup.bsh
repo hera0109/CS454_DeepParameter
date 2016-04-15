@@ -14,19 +14,44 @@ sudo make install && \
 cd .. && \
 
 #Get the negative testcases
-wget http://www.vision.caltech.edu/Image_Datasets/Caltech101/101_ObjectCategories.tar.gz && \
-tar -xzf 101_ObjectCategories.tar.gz && \
-mv 101_ObjectCategories negative_testcases && \
-rm 101_ObjectCategories.tar.gz && \
-cd negative_testcases && \
+wget http://www.vision.caltech.edu/Image_Datasets/Caltech256/256_ObjectCategories.tar && \
+tar -xf 256_ObjectCategories.tar && \
+mv 256_ObjectCategories negative_testcases_temp && \
+rm 256_ObjectCategories.tar && \
+cd negative_testcases_temp && \
 for file in $(ls); do cp $file/* ./; rm -r $file; done && \
 cd .. && \
+mkdir negative_testcases && \
+cat negative_10000.dat | while read x; do mv negative_testcases_temp/$x negative_testcases/$x; done && \ 
+rm -r negative_testcases_temp && \
+
+#cat negative_testcases_delete.dat | while read line; do rm $line ; done &&\
 
 #Get the positive testcases
 wget http://vis-www.cs.umass.edu/lfw/lfw.tgz && \
 tar -xzf lfw.tgz && \
-mv lfw positive_testcases && \
+mv lfw positive_testcases_temp && \
 rm lfw.tgz && \
-cd positive_testcases && \
+cd positive_testcases_temp && \
 for file in $(ls); do cp $file/* ./; rm -r $file; done && \
-cd ..
+cd .. && \
+mkdir positive_testcases && \
+cat positive_10000.dat | while read x; do mv positive_testcases_temp/$x positive_testcases/ ; done && \
+rm -r positive_testcases_temp && \
+
+#Generate training set and update oracle
+mkdir training_set && \
+ls positive_testcases | sort | head -1500 | while read x; do cp positive_testcases/$x training_set/ && echo "training_set/"$x",1" >>oracle.csv ; done && \
+ls negative_testcases | sort | head -1500 | while read x; do cp negative_testcases/$x training_set/ && echo "training_set/"$x",0" >>oracle.csv ; done && \
+
+#Generate the test set and update oracle
+mkdir test_set && \
+ls positive_testcases | sort | tail -8500 | while read x; do cp positive_testcases/$x test_set/ && echo "test_set/"$x",1" >>oracle.csv; done && \
+ls negative_testcases | sort | tail -8500 | while read x; do cp negative_testcases/$x test_set/ && echo "test_set/"$x",0" >>oracle.csv; done && \
+
+#Make classify_images
+cmake . && \
+make && \
+
+#Cleanup
+rm -r positive_testcases negative_testcases
