@@ -41,9 +41,9 @@ int main(int argc, char** argv  )
     		body_cascade.detectMultiScale( image_gray, bodies, 1.1, 2, 0, Size(80, 80) );
 
     		if(bodies.size() == 0){
-        		cout << itr->path() << ",0" << std::endl; //printf("FALSE\n");
+        		cout << itr->path().string() << ",0" << std::endl; //printf("FALSE\n");
     		} else {
-    			cout << itr->path() << ",1" << std::endl; //printf("TRUE\n");
+    			cout << itr->path().string() << ",1" << std::endl; //printf("TRUE\n");
                 }
        }
     }
