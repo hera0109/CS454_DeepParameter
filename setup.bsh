@@ -49,6 +49,10 @@ mkdir test_set && \
 ls positive_testcases | sort | tail -8500 | while read x; do cp positive_testcases/$x test_set/ && echo "test_set/"$x",1" >>oracle.csv; done && \
 ls negative_testcases | sort | tail -8500 | while read x; do cp negative_testcases/$x test_set/ && echo "test_set/"$x",0" >>oracle.csv; done && \
 
+#Select a test used for sensitivity analysis
+mkdir sensitivity_set && \
+ls positive_testcases | sort | head -1 | while read x; do cp positive_testcases/$x sensitivity_set/ && echo "sensitivity_set/"$x",1" >>oracle.csv ; done && \
+
 #Make classify_images
 cmake . && \
 make && \
