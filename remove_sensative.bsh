@@ -1,0 +1,83 @@
+#!/bin/bash
+
+#Requires Rscript:
+#sudo apt-get install r-base-core
+
+cp modifiable_files/replaces.hpp ./opencv/modules/objdetect/src/replaces.hpp
+{
+  cd opencv
+  make
+  sudo make install
+  cd ..
+} &>/dev/null
+
+{
+  i=0
+  while [ "$i" -lt "100" ]; do
+    ./fitness_function.bsh training_set oracle.csv 90
+    i=$(( $i + 1 ))
+  done
+} >no_mod_100_run.csv
+
+execution_time_list=$(mktemp /tmp/XXXX)
+cat no_mod_100_run.csv | cut -d , -f 1 >$execution_time_list
+
+lower_bound=$(Rscript get_95_confidence_lower.R $execution_time_list | awk '{print $2}')
+upper_bound=$(Rscript get_95_confidence_lower.R $execution_time_list | awk '{print $2}')
+
+i=1;
+temp_file=$(mktemp /tmp/XXXX)
+while [ "$i" -le $(cat modifiable_files/replaces.hpp | wc -l) ]; do
+  line=$(cat modifiable_files/replaces.hpp | head -$i | tail -1)
+  value=$(echo $line | cut -d " " -f 3)
+  value=$(( $value + 1 ))
+  new_line=$(echo $line | cut -d " " -f 1-2)" "$value
+  sed "s/$line/$new_line/g" modifiable_files/replaces.hpp >./opencv/modules/objdetect/src/replaces.hpp
+  {
+  make -C opencv
+  } &>/dev/null
+  status=$?
+  if [ "$status" -eq 0 ]; then
+
+    {
+      cd opencv
+      sudo make install
+      cd ..
+    } &>/dev/null
+    
+    ./fitness_function.bsh sensitivity_set oracle.csv 10 >$temp_file
+    if [ "N/A" == "$(cat $temp_file | cut -d , -f 1)" ]; then
+      echo $line",false"
+    else
+      new_new_line=$(echo $line | cut -d " " -f 1-2)" "$(( $value + 49 ))
+      sed "s/$line/$new_new_line/g" modifiable_files/replaces.hpp >./opencv/modules/objdetect/src/replaces.hpp
+      
+      {
+        make -C opencv
+      } &>/dev/null
+      status=$?
+
+      if [ "$status" != "0" ]; then
+         echo $line",true,NO_COMPILE,false"
+      else
+        {
+          cd opencv
+          sudo make install
+          cd ..
+        } &>/dev/null
+        result=$(./fitness_function.bsh training_set oracle.csv 90)
+        time_value=$(echo $result | cut -d , -f 1)
+        if [ "$time_value" == "N/A" ]; then
+          echo $line",true,N/A,true"
+        elif (( $(echo "$time_value < $lower_bound" | bc -l) )) || (( $(echo "$time_value > $upper_bound" | bc -l) )); then
+          echo $line",true,"$time_value",true"
+        else
+          echo $line",true,"$time_value",false"
+        fi
+      fi
+    fi
+  else
+    echo $line",false"
+  fi
+  i=$(( $i + 1 ))
+done

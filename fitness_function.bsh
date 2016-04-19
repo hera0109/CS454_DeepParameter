@@ -1,0 +1,43 @@
+#!/bin/bash
+
+# Run the fitness function. Assumes the program is already compiled. $1 == the directory containing the test images, $2 == the ./classify_images output in a completely ideal run (all negative as negative, all positive as positive). $3== timeout 
+# Outputs data in the format '<execution_time_sections>,<percentage_correct_classification>'. Ouput = 'N/A,0%' if timeout
+
+test_dir=$1
+oracle=$2
+timeout_length=$3
+
+temp_output=$(mktemp /tmp/XXXX)
+timeout $timeout_length time -p ./classify_images $test_dir &>$temp_output
+status=$?
+
+if [ "$status" -eq 0 ]; then
+  time=$(cat $temp_output | awk '($1=="real"){print $2}')
+  correct=0
+  incorrect=0
+
+  parsed_temp_output=$(mktemp /tmp/XXXX)
+  cat $temp_output | awk -F "," '($2)' >$parsed_temp_output
+  while read line; do
+    image=$(echo $line | cut -d , -f 1) 
+    class=$(echo $line | cut -d , -f 2)
+    correct_class=$(awk -F "," -v image="$image" '($1==image){print $2}' $oracle)
+    
+    if [ "$correct_class" == "" ]; then
+      echo "ERROR: Cannot find correct classification for image "$image
+      exit 1
+    fi
+
+    if [ "$correct_class" == "$class" ]; then
+      correct=$(( $correct + 1 ))
+    else
+      incorrect=$(( $incorrect + 1 ))
+    fi
+  done <$parsed_temp_output
+
+  echo $time","$(echo "($correct / ($correct + $incorrect)) * 100" | bc -l)
+else
+  echo 'N/A,0%'
+fi
+
+exit 0
