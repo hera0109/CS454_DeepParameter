@@ -7,11 +7,13 @@ command -v wget >/dev/null 2>&1 || { echo "wget required but it's not installed.
 git clone https://github.com/Itseez/opencv.git  && \
 cd opencv && \
 git checkout `git rev-list -1 --before="Apr 7 2016" master` && \
-
+cp ../modifiable_files/cascadedetect_exposed.hpp modules/objdetect/src/cascadedetect.hpp && \
+cp ../modifiable_files/cascadedetect_exposed.cpp modules/objdetect/src/cascadedetect.cpp && \
+cp ../modifiable_files/replaces.hpp modules/objdetect/src/ && \
 cmake . && \
 make && \
 sudo make install && \
-cd .. && \
+cd .. #&& \
 
 #Get the negative testcases
 wget http://www.vision.caltech.edu/Image_Datasets/Caltech256/256_ObjectCategories.tar && \
