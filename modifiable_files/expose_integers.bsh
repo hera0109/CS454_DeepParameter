@@ -12,7 +12,7 @@ input_file=$1 #The input C++ file
 output_file=$2 #The output file (like the C++ but with the integer constants replaced with C++ define macros)
 define_file=$3 #The file which shall store the define macro definitions (always appended to)
 
-filename=$(echo $(basename $input_file) | rev | cut -d . -f 2- | rev)
+filename=$(echo $(basename $input_file) | rev | cut -d . -f 2- | rev)$(echo $(basename $input_file) | rev | cut -d . -f 1 | rev)
 
 #Replace instances of '[variable]++' with '[variable]+=1' (exposes addition, "hidden" constant)
 new_input_file=$(mktemp /tmp/XXXX)

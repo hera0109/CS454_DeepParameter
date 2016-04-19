@@ -14,18 +14,18 @@ class FeatureEvaluator
 public:
 enum
 {
-HAAR = cascadedetect_INTEGER_16_1_0,
-LBP  = cascadedetect_INTEGER_17_1_1,
-HOG  = cascadedetect_INTEGER_18_1_2
+HAAR = cascadedetecthpp_INTEGER_16_1_0,
+LBP  = cascadedetecthpp_INTEGER_17_1_1,
+HOG  = cascadedetecthpp_INTEGER_18_1_2
 };
 
 struct ScaleData
 {
-ScaleData() { scale = 0.f; layer_ofs = ystep = cascadedetect_INTEGER_23_1_0; }
+ScaleData() { scale = 0.f; layer_ofs = ystep = cascadedetecthpp_INTEGER_23_1_0; }
 Size getWorkingSize(Size winSize) const
 {
-return Size(std::max(szi.width - winSize.width, cascadedetect_INTEGER_26_1_0),
-std::max(szi.height - winSize.height, cascadedetect_INTEGER_27_1_0));
+return Size(std::max(szi.width - winSize.width, cascadedetecthpp_INTEGER_26_1_0),
+std::max(szi.height - winSize.height, cascadedetecthpp_INTEGER_27_1_0));
 }
 
 float scale;
@@ -44,7 +44,7 @@ virtual bool setImage(InputArray img, const std::vector<float>& scales);
 virtual bool setWindow(Point p, int scaleIdx);
 const ScaleData& getScaleData(int scaleIdx) const
 {
-CV_Assert( cascadedetect_INTEGER_46_1_0 <= scaleIdx && scaleIdx < (int)scaleData->size());
+CV_Assert( cascadedetecthpp_INTEGER_46_1_0 <= scaleIdx && scaleIdx < (int)scaleData->size());
 return scaleData->at(scaleIdx);
 }
 virtual void getUMats(std::vector<UMat>& bufs);
@@ -59,7 +59,7 @@ virtual int calcCat(int featureIdx) const;
 static Ptr<FeatureEvaluator> create(int type);
 
 protected:
-enum { SBUF_VALID=cascadedetect_INTEGER_61_1_1, USBUF_VALID=cascadedetect_INTEGER_61_2_2 };
+enum { SBUF_VALID=cascadedetecthpp_INTEGER_61_1_1, USBUF_VALID=cascadedetecthpp_INTEGER_61_2_2 };
 int sbufFlag;
 
 bool updateScaleData( Size imgsz, const std::vector<float>& _scales );
@@ -88,7 +88,7 @@ bool read_( const FileNode& node );
 void detectMultiScale( InputArray image,
 CV_OUT std::vector<Rect>& objects,
 double scaleFactor = 1.1,
-int minNeighbors = cascadedetect_INTEGER_90_1_3, int flags = cascadedetect_INTEGER_90_2_0,
+int minNeighbors = cascadedetecthpp_INTEGER_90_1_3, int flags = cascadedetecthpp_INTEGER_90_2_0,
 Size minSize = Size(),
 Size maxSize = Size() );
 
@@ -96,7 +96,7 @@ void detectMultiScale( InputArray image,
 CV_OUT std::vector<Rect>& objects,
 CV_OUT std::vector<int>& numDetections,
 double scaleFactor=1.1,
-int minNeighbors=cascadedetect_INTEGER_98_1_3, int flags=cascadedetect_INTEGER_98_2_0,
+int minNeighbors=cascadedetecthpp_INTEGER_98_1_3, int flags=cascadedetecthpp_INTEGER_98_2_0,
 Size minSize=Size(),
 Size maxSize=Size() );
 
@@ -105,7 +105,7 @@ CV_OUT std::vector<Rect>& objects,
 CV_OUT std::vector<int>& rejectLevels,
 CV_OUT std::vector<double>& levelWeights,
 double scaleFactor = 1.1,
-int minNeighbors = cascadedetect_INTEGER_107_1_3, int flags = cascadedetect_INTEGER_107_2_0,
+int minNeighbors = cascadedetecthpp_INTEGER_107_1_3, int flags = cascadedetecthpp_INTEGER_107_2_0,
 Size minSize = Size(),
 Size maxSize = Size(),
 bool outputRejectLevels = false );
@@ -120,7 +120,7 @@ void setMaskGenerator(const Ptr<MaskGenerator>& maskGenerator);
 Ptr<MaskGenerator> getMaskGenerator();
 
 protected:
-enum { SUM_ALIGN = cascadedetect_INTEGER_122_1_64 };
+enum { SUM_ALIGN = cascadedetecthpp_INTEGER_122_1_64 };
 
 bool detectSingleScale( InputArray image, Size processingRectSize,
 int yStep, double factor, std::vector<Rect>& candidates,
@@ -135,8 +135,8 @@ std::vector<int>& rejectLevels, std::vector<double>& levelWeights,
 double scaleFactor, Size minObjectSize, Size maxObjectSize,
 bool outputRejectLevels = false );
 
-enum { MAX_FACES = cascadedetect_INTEGER_137_1_10000 };
-enum { BOOST = cascadedetect_INTEGER_138_1_0 };
+enum { MAX_FACES = cascadedetecthpp_INTEGER_137_1_10000 };
+enum { BOOST = cascadedetecthpp_INTEGER_138_1_0 };
 enum { DO_CANNY_PRUNING    = CASCADE_DO_CANNY_PRUNING,
 SCALE_IMAGE         = CASCADE_SCALE_IMAGE,
 FIND_BIGGEST_OBJECT = CASCADE_FIND_BIGGEST_OBJECT,
@@ -392,7 +392,7 @@ OptFeature();
 
 int calc( const int* pwin ) const;
 void setOffsets( const Feature& _f, int step );
-int ofs[cascadedetect_INTEGER_394_1_1];
+int ofs[cascadedetecthpp_INTEGER_394_1_1];
 };
 
 LBPEvaluator();
@@ -429,7 +429,7 @@ rect = Rect();
 inline LBPEvaluator::OptFeature :: OptFeature()
 {
 for( int i = 0; i < 16; i+=1 )
-ofs[i] = cascadedetect_INTEGER_431_1_16;
+ofs[i] = cascadedetecthpp_INTEGER_431_1_16;
 }
 
 inline int LBPEvaluator::OptFeature :: calc( const int* p ) const
@@ -465,7 +465,7 @@ for( int si = 0; si < nstages; si+=1 )
 {
 CascadeClassifierImpl::Data::Stage& stage = cascadeStages[si];
 int wi, ntrees = stage.ntrees;
-sum = cascadedetect_INTEGER_467_1_0;
+sum = cascadedetecthpp_INTEGER_467_1_0;
 
 for( wi = 0; wi < ntrees; wi+=1 )
 {
@@ -478,7 +478,7 @@ CascadeClassifierImpl::Data::DTreeNode& node = cascadeNodes[root + idx];
 double val = featureEvaluator(node.featureIdx);
 idx = val < node.threshold ? node.left : node.right;
 }
-while( idx > cascadedetect_INTEGER_480_1_9 );
+while( idx > cascadedetecthpp_INTEGER_480_1_9 );
 sum += cascadeLeaves[leafOfs - idx];
 nodeOfs += weak.nodeCount;
 leafOfs += weak.nodeCount + 1;
@@ -494,11 +494,11 @@ inline int predictCategorical( CascadeClassifierImpl& cascade,
 Ptr<FeatureEvaluator> &_featureEvaluator, double& sum )
 {
 int nstages = (int)cascade.data.stages.size();
-int nodeOfs = cascadedetect_INTEGER_496_1_0, leafOfs = 0;
+int nodeOfs = cascadedetecthpp_INTEGER_496_1_0, leafOfs = 0;
 FEval& featureEvaluator = (FEval&)*_featureEvaluator;
-size_t subsetSize = (cascade.data.ncategories + cascadedetect_INTEGER_498_1_0)/32;
+size_t subsetSize = (cascade.data.ncategories + cascadedetecthpp_INTEGER_498_1_0)/32;
 int* cascadeSubsets = &cascade.data.subsets[0];
-float* cascadeLeaves = &cascade.data.leaves[cascadedetect_INTEGER_500_1_0];
+float* cascadeLeaves = &cascade.data.leaves[cascadedetecthpp_INTEGER_500_1_0];
 CascadeClassifierImpl::Data::DTreeNode* cascadeNodes = &cascade.data.nodes[0];
 CascadeClassifierImpl::Data::DTree* cascadeWeaks = &cascade.data.classifiers[0];
 CascadeClassifierImpl::Data::Stage* cascadeStages = &cascade.data.stages[0];
@@ -507,7 +507,7 @@ for(int si = 0; si < nstages; si+=1 )
 {
 CascadeClassifierImpl::Data::Stage& stage = cascadeStages[si];
 int wi, ntrees = stage.ntrees;
-sum = cascadedetect_INTEGER_509_1_0;
+sum = cascadedetecthpp_INTEGER_509_1_0;
 
 for( wi = 0; wi < ntrees; wi+=1 )
 {
@@ -518,12 +518,12 @@ do
 CascadeClassifierImpl::Data::DTreeNode& node = cascadeNodes[root + idx];
 int c = featureEvaluator(node.featureIdx);
 const int* subset = &cascadeSubsets[(root + idx)*subsetSize];
-idx = (subset[c>>cascadedetect_INTEGER_520_1_1] & (1 << (c & 31))) ? node.left : node.right;
+idx = (subset[c>>cascadedetecthpp_INTEGER_520_1_1] & (1 << (c & 31))) ? node.left : node.right;
 }
 while( idx > 0 );
 sum += cascadeLeaves[leafOfs - idx];
 nodeOfs += weak.nodeCount;
-leafOfs += weak.nodeCount + cascadedetect_INTEGER_525_1_1;
+leafOfs += weak.nodeCount + cascadedetecthpp_INTEGER_525_1_1;
 }
 if( sum < stage.threshold )
 return -si;
@@ -537,8 +537,8 @@ Ptr<FeatureEvaluator> &_featureEvaluator, double& sum )
 {
 CV_Assert(!cascade.data.stumps.empty());
 FEval& featureEvaluator = (FEval&)*_featureEvaluator;
-const CascadeClassifierImpl::Data::Stump* cascadeStumps = &cascade.data.stumps[cascadedetect_INTEGER_539_1_0];
-const CascadeClassifierImpl::Data::Stage* cascadeStages = &cascade.data.stages[cascadedetect_INTEGER_540_1_0];
+const CascadeClassifierImpl::Data::Stump* cascadeStumps = &cascade.data.stumps[cascadedetecthpp_INTEGER_539_1_0];
+const CascadeClassifierImpl::Data::Stage* cascadeStages = &cascade.data.stages[cascadedetecthpp_INTEGER_540_1_0];
 
 int nstages = (int)cascade.data.stages.size();
 double tmp = 0;
@@ -546,10 +546,10 @@ double tmp = 0;
 for( int stageIdx = 0; stageIdx < nstages; stageIdx+=1 )
 {
 const CascadeClassifierImpl::Data::Stage& stage = cascadeStages[stageIdx];
-tmp = cascadedetect_INTEGER_548_1_0;
+tmp = cascadedetecthpp_INTEGER_548_1_0;
 
 int ntrees = stage.ntrees;
-for( int i = cascadedetect_INTEGER_551_1_0; i < ntrees; i+=1 )
+for( int i = cascadedetecthpp_INTEGER_551_1_0; i < ntrees; i+=1 )
 {
 const CascadeClassifierImpl::Data::Stump& stump = cascadeStumps[i];
 double value = featureEvaluator(stump.featureIdx);
@@ -565,7 +565,7 @@ cascadeStumps += ntrees;
 }
 
 sum = (double)tmp;
-return cascadedetect_INTEGER_567_1_1;
+return cascadedetecthpp_INTEGER_567_1_1;
 }
 
 template<class FEval>
@@ -575,12 +575,12 @@ Ptr<FeatureEvaluator> &_featureEvaluator, double& sum )
 CV_Assert(!cascade.data.stumps.empty());
 int nstages = (int)cascade.data.stages.size();
 FEval& featureEvaluator = (FEval&)*_featureEvaluator;
-size_t subsetSize = (cascade.data.ncategories + cascadedetect_INTEGER_577_1_0)/32;
+size_t subsetSize = (cascade.data.ncategories + cascadedetecthpp_INTEGER_577_1_0)/32;
 const int* cascadeSubsets = &cascade.data.subsets[0];
 const CascadeClassifierImpl::Data::Stump* cascadeStumps = &cascade.data.stumps[0];
-const CascadeClassifierImpl::Data::Stage* cascadeStages = &cascade.data.stages[cascadedetect_INTEGER_580_1_0];
+const CascadeClassifierImpl::Data::Stage* cascadeStages = &cascade.data.stages[cascadedetecthpp_INTEGER_580_1_0];
 
-double tmp = cascadedetect_INTEGER_582_1_0;
+double tmp = cascadedetecthpp_INTEGER_582_1_0;
 for( int si = 0; si < nstages; si+=1 )
 {
 const CascadeClassifierImpl::Data::Stage& stage = cascadeStages[si];
