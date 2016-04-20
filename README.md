@@ -1,7 +1,7 @@
 # DPT-OpenCV
 
 ##Basic Setup
-Run `./setup.bsh` to download and install OpenCV, the Positive and Negative testcases
+Run `./setup.bsh` to download and install OpenCV, the testcases and setup the project (This downloads over a GB of data. It may take some time to complete)
 
 Please note that cmake, make, build-essentials are all required for setup.bsh to run successfully ( `sudo apt-get install cmake make build-essentials' )
 
