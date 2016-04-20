@@ -2,5 +2,7 @@ When profiling we identified the following files in wich the vast majority of ac
 
 opencv/modules/objdetect/src/cascadedetect.cpp
 opencv/modules/objdetect/src/cascadedetect.hpp
-opencv/modules/imgproc/src/imgwarp.cpp
+
+The following files were found to be the next in terms of activity use but due to their huge scale and large number of constants we decided to draw the line at this point. However, future researchers may wish to take these into account
+opencv/modules/imgproc/src/imgwarp.cpp 
 opencv/modules/imgproc/src/color.cpp
