@@ -23,7 +23,7 @@ execution_time_list=$(mktemp /tmp/XXXX)
 cat no_mod_100_run.csv | cut -d , -f 1 >$execution_time_list
 
 lower_bound=$(Rscript get_95_confidence_lower.R $execution_time_list | awk '{print $2}')
-upper_bound=$(Rscript get_95_confidence_lower.R $execution_time_list | awk '{print $2}')
+upper_bound=$(Rscript get_95_confidence_upper.R $execution_time_list | awk '{print $2}')
 
 i=1;
 temp_file=$(mktemp /tmp/XXXX)
