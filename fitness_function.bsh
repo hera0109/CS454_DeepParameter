@@ -34,8 +34,12 @@ if [ "$status" -eq 0 ]; then
       incorrect=$(( $incorrect + 1 ))
     fi
   done <$parsed_temp_output
-
-  echo $time","$(echo "($correct / ($correct + $incorrect)) * 100" | bc -l)
+  
+  if (( $(echo "($correct + $incorrect) > 0" | bc -l) )); then
+    echo $time","$(echo "($correct / ($correct + $incorrect)) * 100" | bc -l)
+  else
+    echo 'N/A,0%'
+  fi
 else
   echo 'N/A,0%'
 fi
