@@ -59,5 +59,10 @@ ls positive_testcases | sort | head -1 | while read x; do cp positive_testcases/
 cmake . && \
 make && \
 
+#Setup MOEA Framework (2.9)
+wget https://github.com/MOEAFramework/MOEAFramework/releases/download/v2.9/MOEAFramework-2.9.tar.gz && \
+tar -xzf MOEAFramework-2.9.tar.gz && \
+rm MOEAFramework-2.9.tar.gz && \
+
 #Cleanup
 rm -r positive_testcases negative_testcases
