@@ -17,7 +17,7 @@ if [ "$status" -eq 0 ]; then
   incorrect=0
 
   parsed_temp_output=$(mktemp /tmp/XXXX)
-  cat $temp_output | awk -F "," '($2)' >$parsed_temp_output
+  cat $temp_output | awk -F "," '(NF==2)' >$parsed_temp_output
   while read line; do
     image=$(echo $line | cut -d , -f 1) 
     class=$(echo $line | cut -d , -f 2)
