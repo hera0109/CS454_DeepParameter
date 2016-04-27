@@ -3,7 +3,7 @@
 ##Basic Setup
 Run `./setup.bsh` to download and install OpenCV, the testcases and setup the project (This downloads over a GB of data. It may take some time to complete)
 
-Please note that cmake, make, build-essentials are all required for setup.bsh to run successfully ( `sudo apt-get install cmake make build-essentials' )
+Please note that cmake, make, build-essentials are all required for setup.bsh to run successfully ( `sudo apt-get install cmake make build-essentials` ). Everything documented here has only been tested on an Ubuntu 14.04.4 OS. It is not known if this would be replicable on anyother OS, unix-based or otherwise.
 
 To compile and run the application:
 
@@ -20,7 +20,7 @@ The directory "profiling" provides two scripts "setup_profiling.bsh" and "remove
 
 "profiling/callgrind.out.11739" was produced using the "valgrind" tool on a subset of the positive and negative testcases (after profiling was setup using "setup_profiling.bsh" :
 
-`valgrind --tool=callgrind ./classify_images [directory containing images]'
+`valgrind --tool=callgrind ./classify_images [directory containing images]`
 
 "profiling/callgraph.png" was generated using "qcachegrind" for Mac OS X (use "kcachegrind" for similar results on Linux)
 
@@ -29,7 +29,7 @@ The "modifiable_files" directory contains the files which shall be modified.
 ##Exposing the parameters
 In the "modifiable_files directory there is an "expose_integers.bsh" script which when run can extract the integer constants from a program. The usage of the script is as follows:
 
-`./expose_integers.bsh [input file] [the output file] [define_file]'
+`./expose_integers.bsh [input file] [the output file] [define_file]`
 
 This script utalises the "replace_integer.pl" script
 
@@ -46,20 +46,20 @@ The output of the "run_sensativity_filteration.bsh" script can be interpreted as
 
 <Constant>,<Not_too_sensative?>,<time_training_set>,<sensative_enough?>
 
-We modify only those constants where <Not_too_sensative?> and <sensative_enough> are true. `cat run_sensativity_filteration_output.csv | awk -F "," '($2=="true" && $4=="true"){print $1}' >replaces_selection.dat'
+We modify only those constants where <Not_too_sensative?> and <sensative_enough> are true. `cat run_sensativity_filteration_output.csv | awk -F "," '($2=="true" && $4=="true"){print $1}' >replaces_selection.dat`
 
 This replaces_selection.dat is then used in the final parameter tuning step
 
 ##Running Deep Parameter Tuning
 The MOEA framework (2.9) is used to run the NSGA-II algorithm. This should have been downloaded and setup with the "setup.bsh" script was run. For this investigation a setup is provided: "DeepParameterTuning.java". This is very much hard-coded to OpenCV. When executed it will run for 10 generations with a population size of 100. The initial generation is seeded with the Deep Parameters in their original state and variants within the local-neighbourhood. To compile execute the following:
 
-`javac -cp ".:MOEAFramework-2.9/lib/*" DeepParameterTuning.java'
+`javac -cp ".:MOEAFramework-2.9/lib/*" DeepParameterTuning.java`
 
 To Run:
 
-`java -cp ".:MOEAFramework-2.9/lib/*" DeepParameterTuning'
+`java -cp ".:MOEAFramework-2.9/lib/*" DeepParameterTuning`
 
-The output to this running this on an Ubuntu m4.large Amazon EC2 Instance (2x2.4GHz Intel Xeon E5-2676 v3 processor, 8GiB of memory, SSD Storage) can be found in the "100ind_10gen_run" directory
+The output to this running this on an Ubuntu 14.04.4 m4.large Amazon EC2 Instance (2x2.4GHz Intel Xeon E5-2676 v3 processor, 8GiB of memory, SSD Storage) can be found in the "100ind_10gen_run" directory
 
 The "100ind_10gen_run" directory contains the following files:
 
