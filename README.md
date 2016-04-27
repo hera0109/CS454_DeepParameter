@@ -47,3 +47,28 @@ The output of the "run_sensativity_filteration.bsh" script can be interpreted as
 <Constant>,<Not_too_sensative?>,<time_training_set>,<sensative_enough?>
 
 We modify only those constants where <Not_too_sensative?> and <sensative_enough> are true. `cat run_sensativity_filteration_output.csv | awk -F "," '($2=="true" && $4=="true"){print $1}' >replaces_selection.dat'
+
+This replaces_selection.dat is then used in the final parameter tuning step
+
+##Running Deep Parameter Tuning
+The MOEA framework (2.9) is used to run the NSGA-II algorithm. This should have been downloaded and setup with the "setup.bsh" script was run. For this investigation a setup is provided: "DeepParameterTuning.java". This is very much hard-coded to OpenCV. When executed it will run for 10 generations with a population size of 100. The initial generation is seeded with the Deep Parameters in their original state and variants within the local-neighbourhood. To compile execute the following:
+
+`javac -cp ".:MOEAFramework-2.9/lib/*" DeepParameterTuning.java'
+
+To Run:
+
+`java -cp ".:MOEAFramework-2.9/lib/*" DeepParameterTuning'
+
+The output to this running this on an Ubuntu m4.large Amazon EC2 Instance (2x2.4GHz Intel Xeon E5-2676 v3 processor, 8GiB of memory, SSD Storage) can be found in the "100ind_10gen_run" directory
+
+The "100ind_10gen_run" directory contains the following files:
+
+DeepParameterTuning_100ind_10gen.dat -> the raw output of executing DeepParameterTuning.java
+
+no_mod_100_run.csv -> the output of running classify_images 100 times using "fitness_function.bsh"
+
+original_output.dat -> the average of "no_mod_100_run.csv"
+
+pareto_optimal.csv -> The Pareto Optimal solutions, derived from "DeepParameterTuning_100ind_10gen.dat"
+
+time_correctness_pareto_front.pdf -> The Pareto Optimal solutions from "pareto_optimal.csv" plotted. Includes "original_output.dat" to show the original appplication (in blue as opposed to the Pareto Frontier in RED)
