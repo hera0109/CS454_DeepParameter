@@ -1,36 +1,14 @@
 #!/bin/bash
 
-#The arguments are the should be integers, seperated by a space, to overwrite the values in 'replaces_selection.dat'. This is then used to load the replacement values into the software
+#The arguments are the should be integers, seperated by a space. This is used by ./load.bsh to build the program with these parameters.
 #Outputs '<Time>,<Accuracy>' . Timeout 60. If unable to compile or crash occurs, ouputs '60,0'
 
-temp_file=$(mktemp /tmp/XXXX)
-i=1;
-while [ "$i" -le $(cat replaces_selection.dat | wc -l) ]; do
-  echo $(cat replaces_selection.dat| head -$i |tail -1 | cut -d " " -f 1-2)" "${!i} >>$temp_file
-  i=$(( $i + 1 ))
-done
-
-new_replaces=$(mktemp /tmp/XXXX)
-cp modifiable_files/replaces.hpp $new_replaces
-
-while read entry; do
-  sed -i "s/.*$(echo $entry | cut -d " " -f 1-2).*/$entry/g" $new_replaces
-done <$temp_file
-
-mv $new_replaces ./opencv/modules/objdetect/src/replaces.hpp
-
 {
-  make -C opencv
-} &>/dev/null
+./load.bsh $@
 status=$?
+} &>/dev/null
 
-if [ "$status" -eq 0 ]; then
-  {
-    cd opencv
-    sudo make install
-    cd ..
-  } &>/dev/null
-
+if [ "$status" == 0 ]; then
   fitness=$(./fitness_function.bsh training_set oracle.csv 60)
   if [ "$(echo $fitness | cut -d , -f 1)" == "N/A" ]; then
     echo "60,0"
