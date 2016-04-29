@@ -66,10 +66,19 @@ The "100ind_10gen_run" directory contains the following files:
 
 DeepParameterTuning_100ind_10gen.dat -> the raw output of executing DeepParameterTuning.java
 
-no_mod_100_run.csv -> the output of running classify_images 100 times using "fitness_function.bsh"
+no_mod_100_run_training_set.csv -> the output of running classify_images 100 times using "fitness_function.bsh"
 
-original_output.dat -> the average of "no_mod_100_run.csv"
+training_set_original.csv -> the average of "no_mod_100_run_training_set.csv"
 
-pareto_optimal.csv -> The Pareto Optimal solutions, derived from "DeepParameterTuning_100ind_10gen.dat"
+pareto_optimal_training_set.csv -> The Pareto Optimal solutions, derived from "DeepParameterTuning_100ind_10gen.dat"
 
-time_correctness_pareto_front.pdf -> The Pareto Optimal solutions from "pareto_optimal.csv" plotted. Includes "original_output.dat" to show the original appplication (in blue as opposed to the Pareto Frontier in RED)
+time_correctness_pareto_front_training_set.pdf -> The Pareto Optimal solutions from "pareto_optimal_training_set.csv" plotted. Includes "training_set_original.csv" to show the original appplication (not Pareto Optimal, in blue as opposed to the Pareto Frontier in RED)
+
+test_set_original.csv -> the original program running the test set
+
+pareto_optimal_test_set.csv -> The Pareto Optimal solutions from "pareto_optimal_trianing_set.csv" run on the testset. Also the original ("test_set_original.csv"). One solution from "pareto_optimal_training_set.csv" crashed when running testset, another was dominated. This is noted in the file.
+
+time_correctness_pareto_front_test_set.csv -> The Pareto Optimal solutions from "pareto_optimal_test_set.csv" plotted
+
+##Patches
+Patches have been provided in the "patches" directory. These allow opencv to be patched with the solutions found in "100ind_10gen_run/pareto_optimal_test_set.csv" . Please consult "patches/README.txt" for more info on this
