@@ -1,0 +1,20 @@
+#!/bin/bash
+
+#The arguments are the should be integers, seperated by a space. This is used by ./load.bsh to build the program with these parameters.
+#Outputs '<Time>,<Accuracy>' . Timeout 60. If unable to compile or crash occurs, ouputs '60,0'
+
+{
+./load.bsh $@
+status=$?
+} &>/dev/null
+
+if [ "$status" == 0 ]; then
+  fitness=$(./fitness_function.bsh test_set oracle.csv 250)
+  if [ "$(echo $fitness | cut -d , -f 1)" == "N/A" ]; then
+    echo "250,0"
+  else
+    echo $fitness
+  fi
+else
+  echo "250,0"
+fi
