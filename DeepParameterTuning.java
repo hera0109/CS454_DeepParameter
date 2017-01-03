@@ -14,7 +14,10 @@ public class DeepParameterTuning {
 	public static class DeepParameterTuningProblem extends AbstractProblem {
 		public static int numEvaluations=0;	
 		public static final int[] genotype = {0,0,0,0,0,1,1,1,0,0,1,0,0,1,0,1,0,2,2,2,1,0,2,2,0,0,0,0,0,2,2,1,1,1,1,0,0,1,1,1,2,31,0,0,1,1,0,0,0,0,0};	
+		public static final int populationSize = 100;
+		public static final int maxEvaluations = 1000;
 		private static final int numObjectives=2;
+
 		public DeepParameterTuningProblem() {
 			super(genotype.length,numObjectives);
 		}
@@ -31,12 +34,14 @@ public class DeepParameterTuning {
 			double[] objectiveResults= new double[numObjectives];
 			
 			//A Hack to ensure the first generation contains an instance of the original software and some within the local neighbourhood	
-			for(int i=0; i< solution.getNumberOfVariables(); i++){
-				int val=genotype[i];
-				if(i==((numEvaluations%solution.getNumberOfVariables())-1)){
-					val+=((numEvaluations -1)/solution.getNumberOfVariables() + 1);
+			if(numEvaluations < populationSize){
+				for(int i=0; i< solution.getNumberOfVariables(); i++){
+					int val=genotype[i];
+					if(i==((numEvaluations%solution.getNumberOfVariables())-1)){
+						val+=((numEvaluations -1)/solution.getNumberOfVariables() + 1);
+					}
+					((RealVariable) solution.getVariable(i)).setValue(val);
 				}
-				((RealVariable) solution.getVariable(i)).setValue(val);
 			}
 			numEvaluations++;
 
@@ -85,8 +90,8 @@ public class DeepParameterTuning {
 		NondominatedPopulation result = new Executor()
                         .withProblemClass(DeepParameterTuningProblem.class)
                         .withAlgorithm("NSGAII")
-             		.withProperty("populationSize", 100)
-			.withMaxEvaluations(1000)
+             		.withProperty("populationSize", populationSize)
+			.withMaxEvaluations(maxEvaluations)
                         .withCheckpointFrequency(1)
                         .withCheckpointFile(new File("example.state"))
                         .run();
