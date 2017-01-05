@@ -3,7 +3,7 @@
 ##Basic Setup
 Run `./setup.bsh` to download and install OpenCV, the testcases and setup the project (This downloads over a GB of data. It may take some time to complete)
 
-Please note that cmake, make, build-essentials are all required for setup.bsh to run successfully ( `sudo apt-get install cmake make build-essentials` ). Everything documented here has only been tested on an Ubuntu 14.04.4 OS. It is not known if this would be replicable on anyother OS, unix-based or otherwise.
+Please note that cmake, make, boost build-essential are all required for setup.bsh to run successfully ( `sudo apt-get install cmake make libboost-all-dev build-essential` ). Everything documented here has only been tested on an Ubuntu 14.04.4 OS. It is not known if this would be replicable on anyother OS, unix-based or otherwise.
 
 To compile and run the application:
 
