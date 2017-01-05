@@ -11,11 +11,12 @@ import java.util.Arrays;
 
 public class DeepParameterTuning {
 
+	public static final int populationSize = 100;
+        public static final int maxEvaluations = 1000;
+
 	public static class DeepParameterTuningProblem extends AbstractProblem {
 		public static int numEvaluations=0;	
 		public static final int[] genotype = {0,0,0,0,0,1,1,1,0,0,1,0,0,1,0,1,0,2,2,2,1,0,2,2,0,0,0,0,0,2,2,1,1,1,1,0,0,1,1,1,2,31,0,0,1,1,0,0,0,0,0};	
-		public static final int populationSize = 100;
-		public static final int maxEvaluations = 1000;
 		private static final int numObjectives=2;
 
 		public DeepParameterTuningProblem() {
