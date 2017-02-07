@@ -26,7 +26,7 @@ public class DeepParameterTuning {
 		public Solution newSolution() {
 			Solution solution = new Solution(getNumberOfVariables(),getNumberOfObjectives());
 			for(int i=0; i < getNumberOfVariables(); i++) {
-				solution.setVariable(i, new RealVariable(genotype[i], 0.0, 64.0));
+				solution.setVariable(i, new RealVariable(genotype[i], 0.0, 100000.0));
 			}
 			return solution;
 		}

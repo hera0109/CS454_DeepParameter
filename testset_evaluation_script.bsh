@@ -1,0 +1,5 @@
+#!/bin/bash
+
+cat $1 | awk -F"," '{print $3}' | while read line; do 
+echo $(./load_and_evaluation_test_set.bsh $line),$line 
+done
