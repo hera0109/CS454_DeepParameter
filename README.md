@@ -2,25 +2,10 @@
 
 The code in the repository was used in an investigation into Deep Parameter Optimisation on OpenCV. The work was published in two papers: 
 
-@inproceedings{bruce2016deep,
-  doi = {10.1007/978-3-319-47106-8_18},
-  url = {https://doi.org/10.1007%2F978-3-319-47106-8_18},
-  year  = {2016},
-  organization = {Springer Nature},
-  pages = {238--243},
-  author = {Bobby R. Bruce and Jonathan M. Aitken and Justyna Petke},
-  title = {Deep Parameter Optimisation for Face Detection Using the {Viola-Jones} Algorithm in {OpenCV}},
-  booktitle = {Proceedings of the 2016 Symposium on Search-Based Software Engineering --- SSBSE '16}
-}
+Bruce, B. R. et al. Deep Parameter Optimisation for Face Detection Using the Viola-Jones Algorithm in OpenCV. SSBSE 2016 (https://doi.org/10.1007%2F978-3-319-47106-8_18)
 
-@techreport{bruce2017deep,
-  url = {http://www.cs.ucl.ac.uk/fileadmin/UCL-CS/research/Research_Notes/RN_17_07.pdf},
-  title={Deep Parameter Optimisation for Face Detection Using the {Viola-Jones} Algorithm in {OpenCV}: {A} Correction},
-  year={2017},
-  author={Bobby R. Bruce},
-  number = {RN/17/07},
-  institution={Department of Computer Science, University College London}
-}
+Bruce, B. R. Deep Parameter Optimisation for Face Detection Using the Viola-Jones Algorithm in OpenCV: A Correction. UCL Dept. if Computer Science Research note RN/17/01 (http://www.cs.ucl.ac.uk/fileadmin/UCL-CS/research/Research_Notes/RN_17_07.pdf)
+
 
 ## Basic Setup
 Run `./setup.bsh` to download and install OpenCV, the testcases and setup the project (This downloads over a GB of data. It may take some time to complete)
