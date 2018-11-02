@@ -1,10 +1,10 @@
 # DPT-OpenCV
 
-The code in the repository was used in an investigation into Deep Parameter Optimisation on OpenCV. The work was published in two papers: 
+The code in the repository was used in an investigation into Deep Parameter Optimisation/Tuning on OpenCV. The work was published in two papers: 
 
 Bruce, B. R. et al. Deep Parameter Optimisation for Face Detection Using the Viola-Jones Algorithm in OpenCV. SSBSE 2016 (https://doi.org/10.1007%2F978-3-319-47106-8_18)
 
-Bruce, B. R. Deep Parameter Optimisation for Face Detection Using the Viola-Jones Algorithm in OpenCV: A Correction. UCL Dept. if Computer Science Research note RN/17/01 (http://www.cs.ucl.ac.uk/fileadmin/UCL-CS/research/Research_Notes/RN_17_07.pdf)
+Bruce, B. R. Deep Parameter Optimisation for Face Detection Using the Viola-Jones Algorithm in OpenCV: A Correction. UCL Dept. of Computer Science Research Note RN/17/01 (http://www.cs.ucl.ac.uk/fileadmin/UCL-CS/research/Research_Notes/RN_17_07.pdf)
 
 
 ## Basic Setup
