@@ -1,6 +1,28 @@
 # DPT-OpenCV
 
-##Basic Setup
+The code in the repository was used in an investigation into Deep Parameter Optimisation on OpenCV. The work was published in two papers: 
+
+@inproceedings{bruce2016deep,
+  doi = {10.1007/978-3-319-47106-8_18},
+  url = {https://doi.org/10.1007%2F978-3-319-47106-8_18},
+  year  = {2016},
+  organization = {Springer Nature},
+  pages = {238--243},
+  author = {Bobby R. Bruce and Jonathan M. Aitken and Justyna Petke},
+  title = {Deep Parameter Optimisation for Face Detection Using the {Viola-Jones} Algorithm in {OpenCV}},
+  booktitle = {Proceedings of the 2016 Symposium on Search-Based Software Engineering --- SSBSE '16}
+}
+
+@techreport{bruce2017deep,
+  url = {http://www.cs.ucl.ac.uk/fileadmin/UCL-CS/research/Research_Notes/RN_17_07.pdf},
+  title={Deep Parameter Optimisation for Face Detection Using the {Viola-Jones} Algorithm in {OpenCV}: {A} Correction},
+  year={2017},
+  author={Bobby R. Bruce},
+  number = {RN/17/07},
+  institution={Department of Computer Science, University College London}
+}
+
+## Basic Setup
 Run `./setup.bsh` to download and install OpenCV, the testcases and setup the project (This downloads over a GB of data. It may take some time to complete)
 
 Please note that cmake, make, boost, build-essential, bc and a Java Development Kit  are all required for setup.bsh and the experiments to run successfully ( `sudo apt-get install cmake make libboost-all-dev build-essentia ldefault-jdk` ). Everything documented here has only been tested on an Ubuntu 14.04.4 and Ubuntu 16.04.1 OS. It is not known if this would be replicable on anyother OS, unix-based or otherwise.
@@ -15,7 +37,7 @@ To compile and run the application:
 
 classify_images should output which images have and which images do not contain faces (1 == face, 0 == not face)
 
-##Profiling the software
+## Profiling the software
 The directory "profiling" provides two scripts "setup_profiling.bsh" and "remove_profiling.bsh" which, when executed from the "profiling" directory shall setup the application for profiling and revert this action respectively
 
 "profiling/callgrind.out.11739" was produced using the "valgrind" tool on a subset of the positive and negative testcases (after profiling was setup using "setup_profiling.bsh" :
@@ -26,7 +48,7 @@ The directory "profiling" provides two scripts "setup_profiling.bsh" and "remove
 
 The "modifiable_files" directory contains the files which shall be modified. 
 
-##Exposing the parameters
+## Exposing the parameters
 In the "modifiable_files directory there is an "expose_integers.bsh" script which when run can extract the integer constants from a program. The usage of the script is as follows:
 
 `./expose_integers.bsh [input file] [the output file] [define_file]`
@@ -37,7 +59,7 @@ We used this create the "cascadedetect_exposed.cpp" and "cascadedetect_exposed.h
 
 These files are copied into the appropriate directory during setup. As with the profiling directory, the scripts and data are mostly for reproducability purposes.
 
-##Filtering the extracted constants
+## Filtering the extracted constants
 For optimisation we want to remove all the constants that are of low value or of no use at all. Since, for this example, we have over 500 constants we wrote a script which goes through each constant and runs some basic tests to indicate whether this is worthwhile.
 
 The "run_sensativity_filteration.bsh" script works by iterating through each constant. For each one, it first of all increments it by one. If it does not compile or produces an outcome which crashes on the "sensitivity_set" then this is considered too sensative to really be of value. If it passes this test then the integer constant has 50 added. If the program compiles, runs, and completes running in the normal amount of time (within the 95% confidence interval of the original application) for the "training_st" then we determine this constant to not be sensative enough for our requirements (it may not be necessisary at all!). The goal is to find constants which can be modified slightly without crashing but change the running of the software when modified by a small amount. A sensativity "sweet-spot" as it were.
@@ -50,7 +72,7 @@ We modify only those constants where [Not_too_sensative?] and [sensative_enough]
 
 This replaces_selection.dat is then used in the final parameter tuning step
 
-##Running Deep Parameter Tuning
+## Running Deep Parameter Tuning
 The MOEA framework (2.9) is used to run the NSGA-II algorithm. This should have been downloaded and setup with the "setup.bsh" script was run. For this investigation a setup is provided: "DeepParameterTuning.java". This is very much hard-coded to OpenCV. When executed it will run for 10 generations with a population size of 100. The initial generation is seeded with the Deep Parameters in their original state and variants within the local-neighbourhood. To compile execute the following:
 
 `javac -cp ".:MOEAFramework-2.9/lib/*" DeepParameterTuning.java`
@@ -59,7 +81,7 @@ To Run:
 
 `java -cp ".:MOEAFramework-2.9/lib/*" DeepParameterTuning`
 
-##Results
+## Results
 The output running this on an Ubuntu 14.04.4 m4.large Amazon EC2 Instance (2x2.4GHz Intel Xeon E5-2676 v3 processor, 8GiB of memory, SSD Storage) can be found in the "100ind_10gen_run" directory
 
 The "100ind_10gen_run" directory contains the following files:
@@ -80,5 +102,5 @@ pareto_optimal_test_set.csv -> The Pareto Optimal solutions from "pareto_optimal
 
 time_correctness_pareto_front_test_set.csv -> The Pareto Optimal solutions from "pareto_optimal_test_set.csv" plotted
 
-##Patches
+## Patches
 Patches have been provided in the "patches" directory. These allow opencv to be patched with the solutions found in "100ind_10gen_run/pareto_optimal_test_set.csv" . Please consult "patches/README.txt" for more info on this
