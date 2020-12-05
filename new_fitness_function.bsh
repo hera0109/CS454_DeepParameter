@@ -14,12 +14,12 @@ if [ "$status" -eq 0 ]; then
   accuracy = 0
 
   parsed_temp_output=$(mktemp /tmp/XXXX)
-  cat $temp_output | awk -F "," '(NF==4)' >$parsed_temp_output
+  cat $temp_output | awk -F "," '(NF==3)' >$parsed_temp_output
   while read line; do
     image=$(echo $line | cut -d , -f 1) 
     GT_points=$(echo $line | cut -d , -f 2)
     predict_points=$(echo $line | cut -d , -f 3)
-    intersection=$(echo $line | cut -d , -f 4)
+    #intersection=$(echo $line | cut -d , -f 4)
 
     #image_accuracy = ((($intersection / $GT_points) + ($intersection / $prediction_points)) / 2 * 100)
     image_accuracy = $(($prediction_points / $GT_points) * 100)
