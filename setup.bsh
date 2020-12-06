@@ -4,19 +4,18 @@
 command -v wget >/dev/null 2>&1 || { echo "wget required but it's not installed.  Aborting." >&2; exit 1; }
 
 #Get, build, install OpenCV
-git clone https://github.com/Itseez/opencv.git  && \
+git clone https://github.com/Itseez/opencv.git 2>/dev/null
 cd opencv && \
 git checkout `git rev-list -1 --before="Apr 6 2016" master` && \
-cp ../modifiable_files/cascadedetect_exposed.hpp modules/objdetect/src/cascadedetect.hpp && \
-cp ../modifiable_files/cascadedetect_exposed.cpp modules/objdetect/src/cascadedetect.cpp && \
-cp ../modifiable_files/replaces.hpp modules/objdetect/src/ && \
-cmake . && \
+cp ../modifiable_files/corner_exposed.cpp modules/imgproc/src/corner.cpp && \
+cp ../modifiable_files/corner_replaces.hpp modules/imgproc/ && \
+cmake -DWITH_IPP=OFF -DHAVE_IPP=0 -DHAVE_IPP_ICV_ONLY=0 . && \
 make && \
 sudo make install && \
 cd .. #&& \
 
 #Get the negative testcases
-wget http://www.vision.caltech.edu/Image_Datasets/Caltech256/256_ObjectCategories.tar && \
+# wget http://www.vision.caltech.edu/Image_Datasets/Caltech256/256_ObjectCategories.tar
 tar -xf 256_ObjectCategories.tar && \
 mv 256_ObjectCategories negative_testcases_temp && \
 rm 256_ObjectCategories.tar && \
@@ -24,7 +23,7 @@ cd negative_testcases_temp && \
 for file in $(ls); do cp $file/* ./; rm -r $file; done && \
 cd .. && \
 mkdir negative_testcases && \
-cat negative_10000.dat | while read x; do mv negative_testcases_temp/$x negative_testcases/$x; done && \ 
+cat negative_10000.dat | while read x; do mv negative_testcases_temp/$x negative_testcases/$x; done && \
 rm -r negative_testcases_temp && \
 
 #cat negative_testcases_delete.dat | while read line; do rm $line ; done &&\

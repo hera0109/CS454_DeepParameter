@@ -3,7 +3,7 @@
 #Requires Rscript:
 #sudo apt-get install r-base-core
 
-cp modifiable_files/replaces.hpp ./opencv/modules/objdetect/src/replaces.hpp
+cp modifiable_files/corner_replaces.hpp ./opencv/modules/imgproc/corner_replaces.hpp
 {
   cd opencv
   make
@@ -27,12 +27,12 @@ upper_bound=$(Rscript get_95_confidence_upper.R $execution_time_list | awk '{pri
 
 i=1;
 temp_file=$(mktemp /tmp/XXXX)
-while [ "$i" -le $(cat modifiable_files/replaces.hpp | wc -l) ]; do
-  line=$(cat modifiable_files/replaces.hpp | head -$i | tail -1)
+while [ "$i" -le $(cat modifiable_files/corner_replaces.hpp | wc -l) ]; do
+  line=$(cat modifiable_files/corner_replaces.hpp | head -$i | tail -1)
   value=$(echo $line | cut -d " " -f 3)
   value=$(( $value + 1 ))
   new_line=$(echo $line | cut -d " " -f 1-2)" "$value
-  sed "s/$line/$new_line/g" modifiable_files/replaces.hpp >./opencv/modules/objdetect/src/replaces.hpp
+  sed "s/$line/$new_line/g" modifiable_files/corner_replaces.hpp >./opencv/modules/imgproc/corner_replaces.hpp
   {
   make -C opencv
   } &>/dev/null
@@ -50,7 +50,7 @@ while [ "$i" -le $(cat modifiable_files/replaces.hpp | wc -l) ]; do
       echo $line",false"
     else
       new_new_line=$(echo $line | cut -d " " -f 1-2)" "$(( $value + 49 ))
-      sed "s/$line/$new_new_line/g" modifiable_files/replaces.hpp >./opencv/modules/objdetect/src/replaces.hpp
+      sed "s/$line/$new_new_line/g" modifiable_files/corner_replaces.hpp >./opencv/modules/imgproc/corner_replaces.hpp
       
       {
         make -C opencv
