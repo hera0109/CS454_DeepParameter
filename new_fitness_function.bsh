@@ -1,0 +1,42 @@
+#!/bin/bash
+
+test_dir=$1
+oracle=$2
+timeout_length=$3
+
+temp_output=$(mktemp /tmp/XXXX)
+timeout $timeout_length time -p ./classify_images $test_dir &>$temp_output
+status=$?
+
+if [ "$status" -eq 0 ]; then
+  time=$(cat $temp_output | awk '($1=="real"){print $2}')
+  image_numbers = 0
+  accuracy = 0
+
+  parsed_temp_output=$(mktemp /tmp/XXXX)
+  cat $temp_output | awk -F "," '(NF==3)' >$parsed_temp_output
+  while read line; do
+    image=$(echo $line | cut -d , -f 1) 
+    GT_points=$(echo $line | cut -d , -f 2)
+    predict_points=$(echo $line | cut -d , -f 3)
+    #intersection=$(echo $line | cut -d , -f 4)
+
+    #image_accuracy = ((($intersection / $GT_points) + ($intersection / $prediction_points)) / 2 * 100)
+    image_accuracy = $(($prediction_points / $GT_points) * 100)
+    accuracy = $(( $accuracy + $image_accuracy ))
+
+    image_numbers = $(( $image_numbers + 1 ))
+
+  done <$parsed_temp_output
+  
+  
+  if (($(echo "($accuracy)>0" | bc -l) )); then
+    echo $time","$(echo"($accuracy / $image_numbers)" | bc -l)
+  else
+    echo 'N/A,0%'
+  fi
+else
+  echo 'N/A,0%'
+fi
+
+exit 0
