@@ -14,7 +14,7 @@ cp modifiable_files/corner_replaces.hpp ./opencv/modules/imgproc/corner_replaces
 {
   i=0
   while [ "$i" -lt "100" ]; do
-    ./fitness_function.bsh training_set oracle.csv 90
+    ./new_fitness_function.bsh training_set oracle.csv 90
     i=$(( $i + 1 ))
   done
 } >no_mod_100_run.csv
@@ -45,7 +45,7 @@ while [ "$i" -le $(cat modifiable_files/corner_replaces.hpp | wc -l) ]; do
       cd ..
     } &>/dev/null
     
-    ./fitness_function.bsh sensitivity_set oracle.csv 10 >$temp_file
+    ./new_fitness_function.bsh sensitivity_set oracle.csv 10 >$temp_file
     if [ "N/A" == "$(cat $temp_file | cut -d , -f 1)" ]; then
       echo $line",false"
     else
@@ -65,7 +65,7 @@ while [ "$i" -le $(cat modifiable_files/corner_replaces.hpp | wc -l) ]; do
           sudo make install
           cd ..
         } &>/dev/null
-        result=$(./fitness_function.bsh training_set oracle.csv 90)
+        result=$(./new_fitness_function.bsh training_set oracle.csv 90)
         time_value=$(echo $result | cut -d , -f 1)
         if [ "$time_value" == "N/A" ]; then
           echo $line",true,N/A,true"
