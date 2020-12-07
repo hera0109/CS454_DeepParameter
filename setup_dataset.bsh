@@ -1,0 +1,35 @@
+#!/bin/bash
+# REQUIRES cmake, make, and build-essential
+
+train_data=$1
+test_data=$2
+
+rm -r training_set && \
+rm -r test_set && \
+rm -r sensitivity_set && \
+rm oracle_test.csv && \
+rm oracle_train.csv && \
+# rm oracle_sensitivity.csv && \
+
+# Make training set
+mv $train_data training_set && \
+
+# Make test set
+mv $test_data test_set && \
+
+./corner_detect training_set >>oracle_train.csv && \
+./corner_detect test_set >>oracle_test.csv && \
+
+#Select a test used for sensitivity analysis
+mkdir sensitivity_set && \
+ls training_set | sort | head -1 | while read x; do cp training_set/$x sensitivity_set/ ; done && \
+./corner_detect sensitivity_set >>oracle_sensitivity.csv && \
+
+#Make classify_images
+cmake . && \
+make && \
+
+# #Setup MOEA Framework (2.9)
+# wget https://github.com/MOEAFramework/MOEAFramework/releases/download/v2.9/MOEAFramework-2.9.tar.gz && \
+# tar -xzf MOEAFramework-2.9.tar.gz && \
+# rm MOEAFramework-2.9.tar.gz 

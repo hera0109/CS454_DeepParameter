@@ -9,7 +9,7 @@ status=$?
 } &>/dev/null
 
 if [ "$status" == 0 ]; then
-  fitness=$(./new_fitness_function.bsh test_set oracle.csv 250)
+  fitness=$(./new_fitness_function.bsh test_set oracle_test.csv 250)
   if [ "$(echo $fitness | cut -d , -f 1)" == "N/A" ]; then
     echo "250,0"
   else
