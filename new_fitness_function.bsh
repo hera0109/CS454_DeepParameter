@@ -5,33 +5,44 @@ oracle=$2
 timeout_length=$3
 
 temp_output=$(mktemp /tmp/XXXX)
-timeout $timeout_length time -p ./classify_images $test_dir &>$temp_output
-status=$?
+timeout $timeout_length time -p ./corner_detect $test_dir &>$temp_output
+status1=$?
 
-if [ "$status" -eq 0 ]; then
+temp_find=$(mktemp /tmp/XXXX)
+./find_match $temp_output $oracle &>$temp_find
+status2=$?
+
+# cat $oracle
+cat $temp_find
+
+
+if [ "$status1" -eq 0 ] ; then
   time=$(cat $temp_output | awk '($1=="real"){print $2}')
-  image_numbers = 0
-  accuracy = 0
+  image_numbers=0
+  accuracy=0
 
-  parsed_temp_output=$(mktemp /tmp/XXXX)
-  cat $temp_output | awk -F "," '(NF==3)' >$parsed_temp_output
+  parsed_temp_find=$(mktemp /tmp/XXXX)
+  cat $temp_find | awk -F "," '(NF==4)' >$parsed_temp_find
   while read line; do
     image=$(echo $line | cut -d , -f 1) 
     GT_points=$(echo $line | cut -d , -f 2)
-    predict_points=$(echo $line | cut -d , -f 3)
-    #intersection=$(echo $line | cut -d , -f 4)
+    prediction_points=$(echo $line | cut -d , -f 3)
+    intersection=$(echo $line | cut -d , -f 4)
 
-    #image_accuracy = ((($intersection / $GT_points) + ($intersection / $prediction_points)) / 2 * 100)
-    image_accuracy = $(($prediction_points / $GT_points) * 100)
-    accuracy = $(( $accuracy + $image_accuracy ))
+    temp1=$(( $intersection / $GT_points ))
+    temp2=$(( $intersection / $prediction_points )) # divided by 0일 때 처리해줘야 함
+    image_accuracy=$(( $temp1 + $temp2 ))
+    image_accuracy=$(($image_accuracy / 2 * 100))
+    # image_accuracy = $(($prediction_points / $GT_points) * 100)
+    accuracy=$(( $accuracy + $image_accuracy ))
 
-    image_numbers = $(( $image_numbers + 1 ))
+    image_numbers=$(( $image_numbers + 1 ))
 
-  done <$parsed_temp_output
-  
+  done <$parsed_temp_find
   
   if (($(echo "($accuracy)>0" | bc -l) )); then
-    echo $time","$(echo"($accuracy / $image_numbers)" | bc -l)
+    echo $time","$(( $accuracy / $image_numbers ))
+    # echo $time","$(echo"($accuracy / $image_numbers)" | bc -l)
   else
     echo 'N/A,0%'
   fi

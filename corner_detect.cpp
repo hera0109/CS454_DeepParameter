@@ -56,16 +56,17 @@ int main(int argc, char** argv  )
 				}
         	}
      	}
+		// cout << itr->path().string();
+		// cout << "," << corners.size();
+		// cout << std::endl;
+		// /*
 		cout << itr->path().string();
-		cout << "," << corners.size();
-		cout << std::endl;
-		/*
-		cout << itr->path().string();
+        cout << "," << corners.size();
 		for (vector<std::tuple<int, int>>::iterator iter = corners.begin(); iter != corners.end() ; ++iter){
-			cout << "," << std::get<0>(*iter) << "," << std::get<1>(*iter);
+			cout << "," << std::get<0>(*iter) << " " << std::get<1>(*iter);
 		}
 		cout << std::endl;
-		*/		
+		// */		
        }
     }
 	

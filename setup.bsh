@@ -6,6 +6,7 @@ command -v wget >/dev/null 2>&1 || { echo "wget required but it's not installed.
 #Get, build, install OpenCV
 git clone https://github.com/Itseez/opencv.git 2>/dev/null
 cd opencv && \
+# git reset --hard `git rev-list -1 --before="Apr 6 2016" master` && \ # if not working, try this.
 git checkout `git rev-list -1 --before="Apr 6 2016" master` && \
 cp ../modifiable_files/corner_exposed.cpp modules/imgproc/src/corner.cpp && \
 cp ../modifiable_files/corner_replaces.hpp modules/imgproc/ && \
@@ -62,6 +63,3 @@ make && \
 wget https://github.com/MOEAFramework/MOEAFramework/releases/download/v2.9/MOEAFramework-2.9.tar.gz && \
 tar -xzf MOEAFramework-2.9.tar.gz && \
 rm MOEAFramework-2.9.tar.gz && \
-
-#Cleanup
-rm -r positive_testcases negative_testcases
