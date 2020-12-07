@@ -4,11 +4,12 @@
 train_data=$1
 test_data=$2
 
-rm -r training_set && \
-rm -r test_set && \
-rm -r sensitivity_set && \
-rm oracle_test.csv && \
-rm oracle_train.csv && \
+# # Delete any existing files or directories
+# rm -r training_set && \
+# rm -r test_set && \
+# rm -r sensitivity_set && \
+# rm oracle_test.csv && \
+# rm oracle_train.csv && \
 # rm oracle_sensitivity.csv && \
 
 # Make training set
@@ -33,3 +34,5 @@ make && \
 # wget https://github.com/MOEAFramework/MOEAFramework/releases/download/v2.9/MOEAFramework-2.9.tar.gz && \
 # tar -xzf MOEAFramework-2.9.tar.gz && \
 # rm MOEAFramework-2.9.tar.gz 
+
+echo "done"

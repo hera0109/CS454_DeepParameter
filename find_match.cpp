@@ -7,6 +7,7 @@
 #include <algorithm>
 
 using namespace std; 
+const int max_size=1000;
 
 // Spliting string by delimiter
 vector<string> split(const string& str, char delimiter) {
@@ -34,6 +35,10 @@ int count_matches(vector<pair<int,int>> input, vector<pair<int,int>> target) {
     int flag = 0;
     int i = 0;
     int matches = 0;
+
+    if (target.size() > max_size) {
+        return 0;
+    }
 
     for (i=0 ; i < input.size() ; i++) {
         if (find(target.begin(), target.end(), input[i]) != target.end()) {
@@ -120,6 +125,7 @@ int main (int argc, char** argv) {
             cout << find_matches(in_line, oracle_line) << endl;
         }
         fileInput.close();
+        fileOracle.close();
     }
 
     return 0;

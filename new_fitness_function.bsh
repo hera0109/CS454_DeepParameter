@@ -6,17 +6,12 @@ timeout_length=$3
 
 temp_output=$(mktemp /tmp/XXXX)
 timeout $timeout_length time -p ./corner_detect $test_dir &>$temp_output
-status1=$?
+status=$?
 
 temp_find=$(mktemp /tmp/XXXX)
 ./find_match $temp_output $oracle &>$temp_find
-status2=$?
 
-# cat $oracle
-cat $temp_find
-
-
-if [ "$status1" -eq 0 ] ; then
+if [ "$status" -eq 0 ] ; then
   time=$(cat $temp_output | awk '($1=="real"){print $2}')
   image_numbers=0
   accuracy=0
@@ -29,9 +24,10 @@ if [ "$status1" -eq 0 ] ; then
     prediction_points=$(echo $line | cut -d , -f 3)
     intersection=$(echo $line | cut -d , -f 4)
 
-    temp1=$(( $intersection / $GT_points ))
-    temp2=$(( $intersection / $prediction_points )) # divided by 0일 때 처리해줘야 함
-    image_accuracy=$(( $temp1 + $temp2 ))
+    temp_right=$(( $intersection / $GT_points ))
+    temp_left=$(( $intersection / $prediction_points )) # divided by 0일 때 처리해줘야 함
+
+    image_accuracy=$(( $temp_right + $temp_left ))
     image_accuracy=$(($image_accuracy / 2 * 100))
     # image_accuracy = $(($prediction_points / $GT_points) * 100)
     accuracy=$(( $accuracy + $image_accuracy ))
