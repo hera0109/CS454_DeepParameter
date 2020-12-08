@@ -53,6 +53,8 @@ The output of the "run_sensativity_filteration.bsh" script can be interpreted as
 
 [Constant],[Not_too_sensative?],[time_training_set],[sensative_enough?]
 
+We run "run_sensativity_filteration.bsh" as following: `sudo ./run_sensativity_filteration.bsh > run_sensativity_filteration_output.csv`
+
 We modify only those constants where [Not_too_sensative?] and [sensative_enough] are true. `cat run_sensativity_filteration_output.csv | awk -F "," '($2=="true" && $4=="true"){print $1}' >replaces_selection.dat`
 
 This replaces_selection.dat is then used in the final parameter tuning step
