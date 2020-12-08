@@ -51,10 +51,10 @@ int main(int argc, char** argv  )
 		
 		for( int j = 0; j < dst_norm.rows ; j++ ) {
 			for( int i = 0; i < dst_norm.cols; i++ ) {
-				if( (int) dst_norm.at<float>(j,i) > thresh ) {
+				if( (int) dst_norm.at<float>(j,i) > thresh && corners.size() < 100) {
 					corners.push_back(std::make_tuple(i, j));
 				}
-        	}
+			}
      	}
 		// cout << itr->path().string();
 		// cout << "," << corners.size();
