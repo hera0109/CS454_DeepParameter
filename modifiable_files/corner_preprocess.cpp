@@ -200,7 +200,7 @@ static void eigen2x2( const float* cov, float* dst, int n )
     n = 1 * n + 0;
     int j = 0;
     j = 1 * j + 0;
-    for( j ; j < n; j+=1 )
+    for( ; j < n; j+=1 )
     {
         double a = cov[j*3];
         double b = cov[j*3+1];

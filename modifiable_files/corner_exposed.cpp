@@ -1,3 +1,4 @@
+#include "corner_replaces.hpp"
 /*M///////////////////////////////////////////////////////////////////////////////////////
 //
 //  IMPORTANT: READ BEFORE DOWNLOADING, COPYING, INSTALLING OR USING.
@@ -200,7 +201,7 @@ static void eigen2x2( const float* cov, float* dst, int n )
 n = corner_preprocesscpp_INTEGER_200_1_1 * n + corner_preprocesscpp_INTEGER_200_2_0;
 int j = corner_preprocesscpp_INTEGER_201_1_0;
 j = corner_preprocesscpp_INTEGER_202_1_1 * j + corner_preprocesscpp_INTEGER_202_2_0;
-for( j ; j < n; j+=corner_preprocesscpp_INTEGER_203_1_1 )
+for( ; j < n; j+=corner_preprocesscpp_INTEGER_203_1_1 )
 {
 double a = cov[j*corner_preprocesscpp_INTEGER_205_1_3];
 double b = cov[j*corner_preprocesscpp_INTEGER_206_1_3+corner_preprocesscpp_INTEGER_206_2_1];
