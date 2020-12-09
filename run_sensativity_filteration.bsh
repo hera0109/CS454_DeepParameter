@@ -45,7 +45,7 @@ while [ "$i" -le $(cat modifiable_files/corner_replaces.hpp | wc -l) ]; do
       cd ..
     } &>/dev/null
     
-    ./new_fitness_function.bsh sensitivity_set oracle_sensitivity.csv 10 >$temp_file
+    ./new_fitness_function.bsh sensitivity_set oracle_train.csv 10 >$temp_file
     if [ "N/A" == "$(cat $temp_file | cut -d , -f 1)" ]; then
       echo $line",false"
     else
