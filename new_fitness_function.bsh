@@ -27,13 +27,13 @@ if [ "$status" -eq 0 ] ; then
     if (( $(echo "$GT_points > 0" | bc -l) )); then
       temp_right=$(( $intersection / $GT_points ))
     else
-      temp_right = 0
+      temp_right=0
     fi
 
     if (( $(echo "$prediction_points > 0" | bc -l) )); then
       temp_left=$(( $intersection / $prediction_points ))
     else
-      temp_left = 0
+      temp_left=0
     fi
 
     image_accuracy=$(( $temp_right + $temp_left ))
