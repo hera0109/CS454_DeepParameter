@@ -4,15 +4,13 @@
 train_data=$1
 test_data=$2
 
-# Delete any existing files or directories
-rm -r training_set 2> /dev/null
-rm -r test_set 2> /dev/null
-rm -r sensitivity_set 2> /dev/null
-rm oracle_test.csv 2> /dev/null
-rm oracle_train.csv 2> /dev/null
-rm oracle_sensitivity.csv 2> /dev/null
-
-echo "1";
+# # Delete any existing files or directories
+# rm -r training_set && \
+# rm -r test_set && \
+# rm -r sensitivity_set && \
+# rm oracle_test.csv && \
+# rm oracle_train.csv && \
+# rm oracle_sensitivity.csv && \
 
 # Make training set
 mv $train_data training_set && \
@@ -27,8 +25,6 @@ mv $test_data test_set && \
 mkdir sensitivity_set && \
 ls training_set | sort | head -1 | while read x; do cp training_set/$x sensitivity_set/ ; done && \
 ./corner_detect sensitivity_set >>oracle_sensitivity.csv && \
-
-echo "2"
 
 #Make classify_images
 cmake . && \
